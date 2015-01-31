@@ -86,3 +86,5 @@ STATIC_URL = '/static/'
 TEMPLATE_DIRS = (
     os.path.join(BASE_DIR,  'templates'),
 )
+
+TRANSPORT_EDINBURGH_KEY = "0c627af5849e23b0b030bc7352550884"

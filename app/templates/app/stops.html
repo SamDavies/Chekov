@@ -1,0 +1,10 @@
+{% extends "app/base.html" %}
+
+{% block main %}
+
+    {% for stop in stops_array %}
+        <h1>{{ stop.name }}</h1>
+
+    {% endfor %}
+
+{% endblock %}

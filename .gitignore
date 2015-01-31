@@ -6,3 +6,7 @@
 *.xml
 
 *.pyc
+
+*.ids
+
+*.sqlite3
