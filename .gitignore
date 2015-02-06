@@ -3,8 +3,6 @@
 
 *.iml
 
-*.xml
-
 *.pyc
 
 *.ids
