@@ -1,0 +1,11 @@
+{% extends "app/base.html" %}
+
+{% block main %}
+
+    <h1>reads out stuff</h1>
+    <audio autoplay>
+        <source src="http://tts-api.com/tts.mp3?q={{ audio_string }}." type="audio/mpeg">
+        Your browser does not support the audio element.
+    </audio>
+
+{% endblock %}
