@@ -22,6 +22,11 @@ def stops(request):
     return render(request, "app/stops.html", {'stops_array': stops_array})
 
 
+def choose_route(request):
+    """pick the route to read out"""
+    return render(request, "app/choose_route.html")
+
+
 def convert_to_audio(myString):
     """Converts string to a form which can be read aloud by text-to-speech API"""
     myString.replace(" ", "+")
