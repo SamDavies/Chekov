@@ -5,10 +5,13 @@ import requests
 
 def home(request):
     """some sweet sweet audio"""
-    # audio_string = "Don't stop, never give up, hold your head high and reach the top, let the world see what you have got, bring it all back to you"
-    # audio_string = "Finally Friday night, Feelin' kinda good, lookin' alright, Gotta get movin', can't be late, Gotta get groovin', just can't wait. ho!"
-    audio_string = "O-oh O-oh! Throw your hands in the air. O-oh O-oh! Like you just don't care. O-oh O-oh! There's a party over here. O-oh O-oh! There's a party over there"
-    return render(request, "app/home.html", {'audio_string': convertToAudio(audio_string)})
+    # audio_string = "Don't stop, never give up, hold your head high and reach the top, " \
+    #                "let the world see what you have got, bring it all back to you"
+    # audio_string = "Finally Friday night, Feelin' kinda good, lookin' alright, Gotta get movin', " \
+    #                "can't be late, Gotta get groovin', just can't wait. ho!"
+    audio_string = "O-oh O-oh! Throw your hands in the air. O-oh O-oh! Like you just don't care. " \
+                   "O-oh O-oh! There's a party over here. O-oh O-oh! There's a party over there"
+    return render(request, "app/home.html", {'audio_string': convert_to_audio(audio_string)})
 
 
 def stops(request):
@@ -19,9 +22,9 @@ def stops(request):
     return render(request, "app/stops.html", {'stops_array': stops_array})
 
 
-def convertToAudio(myString):
+def convert_to_audio(myString):
     """Converts string to a form which can be read aloud by text-to-speech API"""
-    myString.replace (" ", "+")
+    myString.replace(" ", "+")
     return myString
 
-#def readNextStop(bus,)
+# def readNextStop(bus,)
