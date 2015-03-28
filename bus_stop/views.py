@@ -3,7 +3,7 @@ import requests
 # Create your views here.
 
 
-def home(request):
+def speech(request):
     """some sweet sweet audio"""
     # audio_string = "Don't stop, never give up, hold your head high and reach the top, " \
     #                "let the world see what you have got, bring it all back to you"
