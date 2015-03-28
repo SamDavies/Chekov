@@ -1,0 +1,1 @@
+web: gunicorn Chekov.wsgi --log-file -
