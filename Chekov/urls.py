@@ -10,6 +10,8 @@ urlpatterns = patterns('',
 
     url(r'^stops/$', app_views.stops, name='stops'),
 
+    url(r'^live_buses/$', app_views.live_locations, name='live_buses'),
+
     url(r'^speech/$', app_views.choose_route, name='speech'),
 
     url(r'^admin/', include(admin.site.urls)),

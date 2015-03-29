@@ -1,4 +1,5 @@
 from django.shortcuts import render
+import math
 import requests
 # Create your views here.
 
@@ -20,6 +21,25 @@ def stops(request):
     stops_array = r.json()["stops"]
     print(str(len(stops_array)) + " stops found")
     return render(request, "app/stops.html", {'stops_array': stops_array})
+
+
+def live_locations(request):
+    """fetch all the stops into an array created from json"""
+    r = requests.get('https://tfe-opendata.com/api/v1/vehicle_locations')
+    live_bus_array = r.json()["vehicles"]
+    print(str(len(live_bus_array)) + " buses found")
+    return render(request, "app/live_buses.html", {'live_bus_array': live_bus_array})
+
+
+def nearest_buses(bus_array, my_lat, my_lng, count):
+    """find the x (count) nearest buses to my location"""
+    def distance_to_me(bus):
+        """the euclidean distance between a bus and my location"""
+        distance = math.sqrt((my_lat - int(bus.latitude))**2 + (my_lng - int(bus.longitude))**2)
+        return distance
+
+    sorted_buses = sorted(bus_array, key=distance_to_me)
+    return sorted_buses[:count]
 
 
 def choose_route(request):

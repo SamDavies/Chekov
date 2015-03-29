@@ -1,0 +1,10 @@
+{% extends "app/base.html" %}
+
+{% block main %}
+
+    {% for bus in live_bus_array %}
+        <h1>{{ bus.service_name }}</h1>
+
+    {% endfor %}
+
+{% endblock %}
