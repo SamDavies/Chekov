@@ -27,15 +27,19 @@ def live_locations(request):
     """fetch all the stops into an array created from json"""
     r = requests.get('https://tfe-opendata.com/api/v1/vehicle_locations')
     live_bus_array = r.json()["vehicles"]
+    my_lat = request.GET.get('lat')
+    my_lng = request.GET.get('lng')
+    nearest_10 = nearest_buses(live_bus_array, my_lat, my_lng, 10)
+
     print(str(len(live_bus_array)) + " buses found")
-    return render(request, "app/live_buses.html", {'live_bus_array': live_bus_array})
+    return render(request, "app/live_buses.html", {'nearest_buses': nearest_10})
 
 
 def nearest_buses(bus_array, my_lat, my_lng, count):
     """find the x (count) nearest buses to my location"""
     def distance_to_me(bus):
         """the euclidean distance between a bus and my location"""
-        distance = math.sqrt((my_lat - int(bus.latitude))**2 + (my_lng - int(bus.longitude))**2)
+        distance = math.sqrt((float(my_lat) - float(bus['latitude']))**2 + (float(my_lng) - float(bus['longitude']))**2)
         return distance
 
     sorted_buses = sorted(bus_array, key=distance_to_me)

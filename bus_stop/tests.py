@@ -53,7 +53,7 @@ class BusStopTest(TestCase):
 
     def test_live_buses_load(self):
         """ensure that the live buses page loads"""
-        response = self.client.get(reverse("live_buses"), data=dict(lat='0', lng='0'))
+        response = self.client.get(reverse("live_buses"), data=dict(lat='55.9443730', lng='-3.1868930'))
         self.assertEqual(response.status_code, 200)
 
     #########
