@@ -12,10 +12,9 @@ class BusStopTest(TestCase):
 
     def get_nearest_x(self, x):
         """set up 3 buses and find the x nearest"""
-        live_bus = namedtuple("LiveBus", "latitude longitude")
-        bus1 = live_bus(10, -10)
-        bus2 = live_bus(-20, -20)
-        bus3 = live_bus(100, 100)
+        bus1 = dict(latitude=10, longitude=-10)
+        bus2 = dict(latitude=-20, longitude=-20)
+        bus3 = dict(latitude=100, longitude=100)
 
         buses = [bus1, bus2, bus3]
         my_lat = 10.0
@@ -51,6 +50,11 @@ class BusStopTest(TestCase):
         response = self.client.get(reverse("stops"))
         self.assertEqual(response.status_code, 200)
         self.assertIn(b'Deans South', response.content)
+
+    def test_live_buses_load(self):
+        """ensure that the live buses page loads"""
+        response = self.client.get(reverse("live_buses"), data=dict(lat='0', lng='0'))
+        self.assertEqual(response.status_code, 200)
 
     #########
     # forms #
