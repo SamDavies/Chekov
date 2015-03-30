@@ -6,7 +6,7 @@ urlpatterns = patterns('',
     # Examples:
     # url(r'^blog/', include('blog.urls')),
 
-    url(r'^$', app_views.choose_route, name='home'),
+    url(r'^$', app_views.live_locations, name='home'),
 
     url(r'^stops/$', app_views.stops, name='stops'),
 

@@ -15,62 +15,33 @@
             <hr width=100% align=left>
 
             <!-- Available Routes -->
-            <button type="button" class="btn btn-default">94a</button>
-            <button type="button" class="btn btn-default">37</button>
-            <button type="button" class="btn btn-default">16</button>
-            <button type="button" class="btn btn-default">900</button>
-            <button type="button" class="btn btn-default">47</button>
-            <button type="button" class="btn btn-default">62a</button>
+            {% for service in nearest_services %}
+                <button type="button" class="btn btn-default">{{ service }}</button>
+            {% endfor %}
         </div>
     </div>
 
     <div class="container-fluid">
         <div class="row">
-            <div class="col-md-6">
-                <div class="panel panel-default">
-                    <div class="panel-heading">78 - Edinburgh to Galashiels</div>
-                    <div class="panel-body">
-                        This is some information about this route
-                        <!--<div id="map-canvas" class="col-sm-6" style="height:200px;"></div>-->
-                    </div>
-                </div>
-            </div>
 
-            <div class="col-md-6">
-                <div class="panel panel-default">
-                    <div class="panel-heading">Route 78</div>
-                    <div class="panel-body">
-                        This is some information about this route
+            {% for bus in nearest_buses %}
+                <div class="col-md-3">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">{{ bus.service_name }} - East to {{ bus.destination }} </div>
+                        <div class="panel-body">
+                            <p>Start</p>
+                            <p>...</p>
+                            <p>Current</p>
+                            <p>next</p>
+                            <p>next again</p>
+                            <p>...</p>
+                            <p>End</p>
+                            <!--<div id="map-canvas" class="col-sm-6" style="height:200px;"></div>-->
+                        </div>
                     </div>
                 </div>
-            </div>
+            {% endfor %}
 
-            <div class="col-md-6">
-                <div class="panel panel-default">
-                    <div class="panel-heading">Route 78</div>
-                    <div class="panel-body">
-                        This is some information about this route
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-md-6">
-                <div class="panel panel-default">
-                    <div class="panel-heading">Route 78</div>
-                    <div class="panel-body">
-                        This is some information about this route
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-md-6">
-                <div class="panel panel-default">
-                    <div class="panel-heading">Route 78</div>
-                    <div class="panel-body">
-                        This is some information about this route
-                    </div>
-                </div>
-            </div>
         </div>
     </div>
 

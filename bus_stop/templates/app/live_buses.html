@@ -2,6 +2,11 @@
 
 {% block main %}
 
+    {% for service in nearest_services %}
+        <h1>{{ service }}</h1>
+
+    {% endfor %}
+
     {% for bus in nearest_buses %}
         <h1>{{ bus.service_name }}</h1>
 

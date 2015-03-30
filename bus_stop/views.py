@@ -29,10 +29,23 @@ def live_locations(request):
     live_bus_array = r.json()["vehicles"]
     my_lat = request.GET.get('lat')
     my_lng = request.GET.get('lng')
-    nearest_10 = nearest_buses(live_bus_array, my_lat, my_lng, 10)
+    nearest_10 = nearest_buses(live_bus_array, my_lat, my_lng, 20)
+
+    # find the unique service numbers
+    nearest_services = []
+    for bus in nearest_10:
+        if bus["service_name"] not in nearest_services:
+            nearest_services.append(bus["service_name"])
 
     print(str(len(live_bus_array)) + " buses found")
-    return render(request, "app/live_buses.html", {'nearest_buses': nearest_10})
+    return render(request, "app/choose_route.html", {'nearest_buses': nearest_10, 'nearest_services': nearest_services})
+
+
+def find_services(buses):
+    """For each bus, concatenate its services"""
+    r = requests.get('https://tfe-opendata.com/api/v1/services')
+    services = r.json()["services"]
+    pass
 
 
 def nearest_buses(bus_array, my_lat, my_lng, count):
