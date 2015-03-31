@@ -14,5 +14,7 @@ urlpatterns = patterns('',
 
     url(r'^speech/$', app_views.choose_route, name='speech'),
 
+    url(r'^mingles/$', app_views.mingles, name='mingles'),
+
     url(r'^admin/', include(admin.site.urls)),
 )

@@ -1,6 +1,8 @@
 from django.shortcuts import render
 import math
 import requests
+import datetime
+
 # Create your views here.
 
 
@@ -12,7 +14,7 @@ def speech(request):
     #                "can't be late, Gotta get groovin', just can't wait. ho!"
     audio_string = "O-oh O-oh! Throw your hands in the air. O-oh O-oh! Like you just don't care. " \
                    "O-oh O-oh! There's a party over here. O-oh O-oh! There's a party over there"
-    return render(request, "app/home.html", {'audio_string': convert_to_audio(audio_string)})
+    return render(request, "app/home.html", {'audio_string': convert_to_audio((audio_string))})
 
 
 def stops(request):
@@ -64,9 +66,35 @@ def choose_route(request):
     return render(request, "app/choose_route.html")
 
 
-def convert_to_audio(myString):
+def convert_to_audio(my_string):
     """Converts string to a form which can be read aloud by text-to-speech API"""
-    myString.replace(" ", "+")
-    return myString
+    my_string.replace(" ", "+")
+    return my_string
+
+def mingles(request):
+    bus_id = 1
+    lat = request.GET.get("lat")
+    lng = request.GET.get("lng")
+    num = request.GET.get("lng")
+    current_time = datetime.datetime.now().minute + (datetime.datetime.now().hour * 60)
+
+    def next_stop_on_(service_number):
+        """For each pair of stops decide what stops this time could be between for each service number and return the latest time """
+        return
+
+    def convertTime():
+        """converts to time object """
+        shite_time = '23:55'
+        hours, minutes = shite_time.split(":")
+
+        return int(hours) * 60 + int(minutes)
+
+    r = requests.get('https://tfe-opendata.com/api/v1/journeys/2')
+    journeys = r.json()["journeys"]
+
+
+    return render(request, "app/mingles.html", {'journeys': journeys, 'time': current_time})
+
+
 
 # def readNextStop(bus,)

@@ -1,0 +1,21 @@
+{% extends "app/base.html" %}
+{% block main %}
+    TIME = {{ time }} <br>
+    {% for journey in journeys %}
+
+        {{ journey }}
+        <br>
+{#       {% for departure in journey.departures %}#}
+{#           {{ departure.time }}#}
+{#       {% endfor %}#}
+
+    {% endfor %}
+s
+{#{% for stop in live_bus_array %}#}
+{#        service name {{ stop.service_name }} -- vehicle id {{ stop.vehicle_id }} -- gps {{ stop.last_gps_fix }} --#}
+{#        longitude {{ stop.longitude }} -- latitude {{ stop.latitude }}#}
+{#        <br>#}
+{##}
+{#{% endfor %}#}
+
+{% endblock %}
