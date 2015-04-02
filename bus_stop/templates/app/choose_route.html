@@ -15,9 +15,11 @@
             <hr width=100% align=left>
 
             <!-- Available Routes -->
-            {% for service in nearest_services %}
-                <button type="button" class="btn btn-default">{{ service }}</button>
-            {% endfor %}
+            <div id="available-routes">
+                {% for service in nearest_services %}
+                    <button type="button" class="btn btn-default">{{ service }}</button>
+                {% endfor %}
+            </div>
         </div>
     </div>
 
@@ -44,5 +46,8 @@
 
         </div>
     </div>
+
+    {% load staticfiles %}
+    <script src="{% static "bus_stop/choose_route.js" %}"></script>
 
 {% endblock %}
