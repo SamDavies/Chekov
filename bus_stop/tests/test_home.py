@@ -1,4 +1,3 @@
-from collections import namedtuple
 from django.test import TestCase
 from django.core.urlresolvers import reverse
 from bus_stop.views import nearest_buses
