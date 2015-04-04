@@ -17,12 +17,16 @@
     var availableDiv = $("#available-routes");
     var chosenDiv = $("#chosen-routes");
     availableDiv.on("click", "button", function () {
-        addButton($(this).text());
+        addButton($(this).text(), chosenDiv, "btn btn-primary");
         $(this).remove();
     });
-    function addButton(button) {
-        var buttonHTML = '<button type="button" class="btn btn-primary">' + button + '</button> ';
-        chosenDiv.append(buttonHTML);
+    chosenDiv.on("click", "button", function () {
+        addButton($(this).text(), availableDiv, "btn btn-default");
+        $(this).remove();
+    });
+    function addButton(button, div, cssClass) {
+        var buttonHTML = '<button type="button" class="' + cssClass + '">' + button + '</button> ';
+        div.prepend(buttonHTML);
     }
 }));
 //# sourceMappingURL=choose_route.js.map

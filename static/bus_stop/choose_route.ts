@@ -25,12 +25,17 @@
     var chosenDiv: String = $("#chosen-routes");
 
     availableDiv.on("click", "button", function() {
-        addButton($(this).text());
+        addButton($(this).text(), chosenDiv, "btn btn-primary");
         $(this).remove();
     });
 
-    function addButton(button: String){
-        var buttonHTML : String = '<button type="button" class="btn btn-primary">' + button + '</button> ';
-        chosenDiv.append(buttonHTML);
+    chosenDiv.on("click", "button", function() {
+        addButton($(this).text(), availableDiv, "btn btn-default");
+        $(this).remove();
+    });
+
+    function addButton(button: String, div, cssClass){
+        var buttonHTML : String = '<button type="button" class="' + cssClass +'">' + button + '</button> ';
+        div.prepend(buttonHTML);
     }
 }));
