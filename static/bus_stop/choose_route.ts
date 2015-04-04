@@ -16,14 +16,21 @@
 
     console.log('The DOM may not be ready');
 
-    // The rest of code goes here!
-    var list = $("#available-routes");
+    /////////////////////////////////
+    // The rest of code goes here! //
+    /////////////////////////////////
+    var chosenRoute: String[] = [];
 
-    list.on("mouseenter", "button", function(){
-        $(this).text("Click me!");
+    var availableDiv: String = $("#available-routes");
+    var chosenDiv: String = $("#chosen-routes");
+
+    availableDiv.on("click", "button", function() {
+        addButton($(this).text());
+        $(this).remove();
     });
 
-    list.on("click", "button", function() {
-        $(this).text("Why did you click me?!");
-    });
+    function addButton(button: String){
+        var buttonHTML : String = '<button type="button" class="btn btn-primary">' + button + '</button> ';
+        chosenDiv.append(buttonHTML);
+    }
 }));

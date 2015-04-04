@@ -10,13 +10,19 @@
         // The DOM is ready!
     });
     console.log('The DOM may not be ready');
-    // The rest of code goes here!
-    var list = $("#available-routes");
-    list.on("mouseenter", "button", function () {
-        $(this).text("Click me!");
+    /////////////////////////////////
+    // The rest of code goes here! //
+    /////////////////////////////////
+    var chosenRoute = [];
+    var availableDiv = $("#available-routes");
+    var chosenDiv = $("#chosen-routes");
+    availableDiv.on("click", "button", function () {
+        addButton($(this).text());
+        $(this).remove();
     });
-    list.on("click", "button", function () {
-        $(this).text("Why did you click me?!");
-    });
+    function addButton(button) {
+        var buttonHTML = '<button type="button" class="btn btn-primary">' + button + '</button> ';
+        chosenDiv.append(buttonHTML);
+    }
 }));
 //# sourceMappingURL=choose_route.js.map
