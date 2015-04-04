@@ -10,14 +10,17 @@ class BusFinderTest(TestCase):
         self.driver = webdriver.Firefox()
 
     def test_add_remove_service(self):
+        """try adding two buttons then removing one"""
         self.driver.get("http://localhost:8000/?lat=55.9443730&lng=-3.1868930")
 
+        self.add_chosen_services()
         self.add_chosen_services()
         self.remove_chosen_services()
 
         self.assertIn("http://localhost:8000/", self.driver.current_url)
 
     def add_chosen_services(self):
+        """click on one button, make sure it moves from available to chosen"""
         # find the list of buttons
         available_buttons, chosen_buttons = self.refresh_dom_buttons()
 
@@ -33,6 +36,24 @@ class BusFinderTest(TestCase):
 
         # make sure that is is available
         self.check_contains(chosen_buttons, btn1_text)
+
+    def remove_chosen_services(self):
+        """click on one button, make sure it moves from chosen to available"""
+        # find the list of buttons
+        available_buttons, chosen_buttons = self.refresh_dom_buttons()
+
+        # click the first button
+        btn1 = chosen_buttons[0]
+        btn1_text = btn1.text
+        btn1.click()
+
+        available_buttons, chosen_buttons = self.refresh_dom_buttons()
+
+        # make sure that it has disappeared
+        self.check_not_contains(chosen_buttons, btn1_text)
+
+        # make sure that is is available
+        self.check_contains(available_buttons, btn1_text)
 
     def check_contains(self, buttons, text):
         """check if the buttons array has a button containing the text"""
@@ -52,9 +73,6 @@ class BusFinderTest(TestCase):
         available_buttons = self.driver.find_element_by_id('available-routes').find_elements_by_class_name('btn')
         chosen_buttons = self.driver.find_element_by_id('chosen-routes').find_elements_by_class_name('btn')
         return available_buttons, chosen_buttons
-
-    def remove_chosen_services(self):
-        pass
 
     def tearDown(self):
         self.driver.quit()
