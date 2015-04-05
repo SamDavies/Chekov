@@ -1,6 +1,7 @@
+import datetime
 from django.test import TestCase
 from django.core.urlresolvers import reverse
-from bus_stop.views import nearest_buses
+from bus_stop.views import nearest_to_me, next_stop, is_after_current_time, get_stop, next_stops
 
 
 class BusStopTest(TestCase):
@@ -19,7 +20,7 @@ class BusStopTest(TestCase):
         my_lat = 10.0
         my_lng = 10.0
 
-        return nearest_buses(buses, my_lat, my_lng, x), bus1, bus2, bus3
+        return nearest_to_me(buses, my_lat, my_lng, x), bus1, bus2, bus3
 
     def test_0_nearest_buses(self):
         """ensure that 0 nearest buses are found"""
@@ -35,6 +36,46 @@ class BusStopTest(TestCase):
         """ensure that the 2 nearest buses are found"""
         nearest, b1, b2, b3 = self.get_nearest_x(2)
         self.assertEquals(nearest, [b1, b2])
+
+    def test_after_current_time(self):
+        """ensure that future time is found"""
+        check_time_str = self.get_time_string(1)
+        self.assertTrue(is_after_current_time(check_time_str))
+
+    def test_before_current_time(self):
+        """ensure that past time is found"""
+        check_time_str = self.get_time_string(-1)
+        self.assertFalse(is_after_current_time(check_time_str))
+
+    def test_get_stop(self):
+        """ensure that a stop can be fetched from its id"""
+        stop1 = dict(stop_id="hello")
+        stop2 = dict(stop_id="my")
+        stop3 = dict(stop_id="son")
+        stops = [stop1, stop2, stop3]
+        stop = get_stop("my", stops)
+        self.assertEquals(stop, stop2)
+
+    def test_next_stops(self):
+        """ensure that all the next stops for the journeys are """
+        stop1 = dict(stop_id="hello", other="other1")
+        stop2 = dict(stop_id="my", other="other2")
+        stop3 = dict(stop_id="son", other="other3")
+        stops = [stop1, stop2, stop3]
+
+        departures1 = dict(time=self.get_time_string(-1), stop_id="hello")
+        departures2 = dict(time=self.get_time_string(10), stop_id="my")
+        departures3 = dict(time=self.get_time_string(100), stop_id="son")
+
+        journeys = [dict(departures=[departures1, departures2, departures3])]
+
+        result = next_stops(journeys, stops)
+        self.assertEquals(len(result), 1)
+        self.assertEquals(result[0]['other'], "other2")
+
+    def get_time_string(self, offset):
+        hours, mins = datetime.datetime.now().hour, datetime.datetime.now().minute
+        return "{0}:{1}".format(str(hours), str(mins+offset))
 
     ##########
     # models #
