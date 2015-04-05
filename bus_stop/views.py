@@ -72,29 +72,48 @@ def convert_to_audio(my_string):
     return my_string
 
 def mingles(request):
-    bus_id = 1
+
     lat = request.GET.get("lat")
     lng = request.GET.get("lng")
-    num = request.GET.get("lng")
-    current_time = datetime.datetime.now().minute + (datetime.datetime.now().hour * 60)
+    bus_id = str(request.GET.get("num"))
+    bus_id = "N37"
 
-    def next_stop_on_(service_number):
-        """For each pair of stops decide what stops this time could be between for each service number and return the latest time """
-        return
-
-    def convertTime():
-        """converts to time object """
-        shite_time = '23:55'
-        hours, minutes = shite_time.split(":")
-
-        return int(hours) * 60 + int(minutes)
-
-    r = requests.get('https://tfe-opendata.com/api/v1/journeys/2')
+    r = requests.get('https://tfe-opendata.com/api/v1/journeys/'+bus_id)
     journeys = r.json()["journeys"]
 
+    def next_stops():
+        """find stop for each journey based on the current time"""
+        stop_ids = []
 
-    return render(request, "app/mingles.html", {'journeys': journeys, 'time': current_time})
+        for journey in journeys:
+
+            for departure in journey["departures"]:
+
+                if is_after_current_time(departure["time"]):
+
+                    test = (departure['stop_id'], departure['time'])
+
+                    if not (test in stop_ids):
+                        stop_ids.append(test)
+                        break
+
+        return stop_ids
+
+   
+
+    return render(request, "app/mingles.html", {'journeys': journeys, 'time': next_stops()})
 
 
+
+def is_after_current_time(api_time):
+    """compares a time against the current time to check if the bus has passed the stop already"""
+    hours, minutes = api_time.split(":")
+    expected_bus_time = int(hours) * 60 + int(minutes)
+    current_time = datetime.datetime.now().minute + ((datetime.datetime.now().hour+1) * 60)
+    current_time = 1
+    if expected_bus_time >= current_time:
+        return True
+
+    return False
 
 # def readNextStop(bus,)
