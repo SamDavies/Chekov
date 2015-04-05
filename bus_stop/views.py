@@ -93,8 +93,9 @@ def next_stop(request):
         for unstopped_stop in unstopped_stops:
             stop, time = unstopped_stop
             if distance_to_stop(stop) < distance_to_stop(closest_stop[0]):
+                if parse_time(time) <= parse_time(closest_stop[1]):
+                    closest_stop = unstopped_stop
 
-                closest_stop = unstopped_stop
                 print("closest stop is " + str(closest_stop))
 
         return closest_stop
@@ -116,18 +117,24 @@ def next_stop(request):
 
         return stop_ids
 
-    def distance_to_stop(next_stop):
+    def parse_time(crap_time):
+        """takes the API time and converts it to minutes for easy comparison"""
+        hours, minutes = crap_time.split(":")
+        expected_bus_time = int(hours) * 60 + int(minutes)
+
+        return expected_bus_time
+
+    def distance_to_stop(the_next_stop):
         """the euclidean distance between a stop and my location"""
         for stop in apistops:
-            if stop["stop_id"] == next_stop:
+            if stop["stop_id"] == the_next_stop:
                 distance = math.sqrt((float(lat) - float(stop['latitude']))**2 + (float(lng) - float(stop['longitude']))**2)
 
         return distance
 
     def is_after_current_time(api_time):
         """compares a time against the current time to check if the bus has passed the stop already"""
-        hours, minutes = api_time.split(":")
-        expected_bus_time = int(hours) * 60 + int(minutes)
+        expected_bus_time = parse_time(api_time)
         current_time = datetime.datetime.now().minute + ((datetime.datetime.now().hour+1) * 60)
 
         if expected_bus_time >= current_time:
