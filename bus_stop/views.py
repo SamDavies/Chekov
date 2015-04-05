@@ -99,7 +99,18 @@ def mingles(request):
 
         return stop_ids
 
-   
+
+
+    def distance_to_stop(next_stop):
+        """the euclidean distance between a stop and my location"""
+        r = requests.get('https://tfe-opendata.com/api/v1/stops/')
+        stops = r.json()["stops"]
+
+        for stop in stops:
+            if stop["stop_id"] == next_stop:
+                distance = math.sqrt((float(lat) - float(stop['latitude']))**2 + (float(lng) - float(stop['longitude']))**2)
+
+        return distance
 
     return render(request, "app/mingles.html", {'journeys': journeys, 'time': next_stops()})
 
