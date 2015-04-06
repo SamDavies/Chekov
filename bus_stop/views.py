@@ -1,7 +1,9 @@
+from django.http import HttpResponse
 from django.shortcuts import render
 import math
 import requests
 import datetime
+import json
 
 
 #########
@@ -47,14 +49,19 @@ def live_locations(request):
 
 def get_feed(request):
     """given the service in the get request find the closest journey both ways"""
-    lat = request.GET.get("lat")
-    lng = request.GET.get("lng")
-    services = request.GET.get('service').json()
+    lat = request.GET.get('lat')
+    lng = request.GET.get('lng')
+    services_json = request.GET.get('services')
+    services = json.loads(services_json)
 
+    journeys = []
     for service in services:
-        service_number = service['service']
-        destination = service['destination']
-        closest_stop = get_journey(service_number, destination, lat, lng)
+        service_number = str(service['service'])
+        destination = str(service['destination'])
+        journeys.append(get_journey(service_number, destination, lat, lng))
+
+    j = json.dumps(journeys)
+    return HttpResponse(j, content_type='application/json')
 
 
 def next_stop(request):
