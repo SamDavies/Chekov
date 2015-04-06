@@ -3,8 +3,10 @@ import math
 import requests
 import datetime
 
-# Create your views here.
 
+#########
+# Views #
+#########
 
 def speech(request):
     """some sweet sweet audio"""
@@ -25,10 +27,6 @@ def stops(request):
     return render(request, "app/stops.html", {'stops_array': stops_array})
 
 
-##############################
-# Main Service Choosing Page #
-##############################
-
 def live_locations(request):
     """fetch all the stops into an array created from json"""
     r = requests.get('https://tfe-opendata.com/api/v1/vehicle_locations')
@@ -44,21 +42,40 @@ def live_locations(request):
             nearest_services.append(bus["service_name"])
 
     print(str(len(live_bus_array)) + " buses found")
-    return render(request, "app/choose_route.html", {'nearest_buses': nearest_10, 'nearest_services': nearest_services})
+    return render(request, "app/feed.html", {'nearest_buses': nearest_10, 'nearest_services': nearest_services})
 
 
-def update_buttons(request):
-    """given the current selected buttons, find the new nearest button and miss out the selected"""
-    pass
-
-
-def find_a_journey(request):
+def get_feed(request):
     """given the service in the get request find the closest journey both ways"""
     lat = request.GET.get("lat")
     lng = request.GET.get("lng")
-    service = request.GET.get('service')
-    destination = request.GET.get('destination')
-    closest_stop = get_next_stop(service, destination, lat, lng)
+    services = request.GET.get('service').json()
+
+    for service in services:
+        service_number = service['service']
+        destination = service['destination']
+        closest_stop = get_journey(service_number, destination, lat, lng)
+
+
+def next_stop(request):
+    """finds the next stop for the user's bus"""
+    """example request: http://127.0.0.1:8000/next_stop/?lat=55.864337&lng=-3.066306&num=2&destination=Gyle Centre"""
+    lat = request.GET.get("lat")
+    lng = request.GET.get("lng")
+    service = str(request.GET.get("num"))
+    destination = request.GET.get("destination")
+
+    journey, nearest_stop = get_journey(service, destination, lat, lng)
+
+    return render(request, "app/tracker.html", {'stops': nearest_stop})
+
+
+###########
+# Helpers #
+###########
+
+def update_buttons(request):
+    """given the current selected buttons, find the new nearest button and miss out the selected"""
     pass
 
 
@@ -73,32 +90,15 @@ def nearest_to_me(things, my_lat, my_lng, count):
     return sorted_buses[:count]
 
 
-################################
-# Current Service Details page #
-################################
-
 def choose_route(request):
     """pick the route to read out"""
-    return render(request, "app/choose_route.html")
+    return render(request, "app/feed.html")
 
 
 def convert_to_audio(my_string):
     """Converts string to a form which can be read aloud by text-to-speech API"""
     my_string.replace(" ", "+")
     return my_string
-
-
-def next_stop(request):
-    """finds the next stop for the user's bus"""
-    """example request: http://127.0.0.1:8000/next_stop/?lat=55.864337&lng=-3.066306&num=2&destination=Gyle Centre"""
-    lat = request.GET.get("lat")
-    lng = request.GET.get("lng")
-    service = str(request.GET.get("num"))
-    destination = request.GET.get("destination")
-
-    journey, nearest_stop = get_journey(service, destination, lat, lng)
-
-    return render(request, "app/next_stop.html", {'stops': nearest_stop})
 
 
 def get_journey(service, destination, lat, lng):
