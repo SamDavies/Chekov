@@ -1,4 +1,5 @@
 import datetime
+import json
 from django.test import TestCase
 from django.core.urlresolvers import reverse
 from bus_stop.views import nearest_to_me, next_stop, is_after_current_time, get_stop, next_stops
@@ -95,6 +96,19 @@ class BusStopTest(TestCase):
     def test_live_buses_load(self):
         """ensure that the live buses page loads"""
         response = self.client.get(reverse("live_buses"), data=dict(lat='55.9443730', lng='-3.1868930'))
+        self.assertEqual(response.status_code, 200)
+
+    def test_next_stop_load(self):
+        """ensure that the live buses page loads"""
+        response = self.client.get(reverse("next_stop"), data=dict(lat='55.9443730', lng='-3.1868930', num=2,
+                                                                   destination="Gyle Centre"))
+        self.assertEqual(response.status_code, 200)
+
+    def test_get_feed(self):
+        """ensure that the live buses page loads"""
+        services = [dict(service=1, destination="Easter Road (foot)"), dict(service=2, destination="Gyle Centre")]
+        s_json = json.dumps(services)
+        response = self.client.get(reverse("get_feed"), data=dict(lat='55.944373', lng='-3.186893', services=s_json))
         self.assertEqual(response.status_code, 200)
 
     #########
