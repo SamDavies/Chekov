@@ -38,4 +38,19 @@
         var buttonHTML : String = '<button type="button" class="' + cssClass +'">' + button + '</button> ';
         div.prepend(buttonHTML);
     }
+
+    function getName(personid) {
+        var dynamicData = {};
+        dynamicData["id"] = personid;
+        return $.ajax({
+            url: "getName.php",
+            type: "get",
+            data: dynamicData
+        });
+    }
+
+    getName("2342342").done(function(data) {
+        // Updates the UI based the ajax result
+        $(".person-name").text(data.name);
+    });
 }));

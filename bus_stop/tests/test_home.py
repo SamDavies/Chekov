@@ -70,8 +70,9 @@ class BusStopTest(TestCase):
         journeys = [dict(departures=[departures1, departures2, departures3])]
 
         result = next_stops(journeys, stops)
-        self.assertEquals(len(result), 1)
-        self.assertEquals(result[0]['other'], "other2")
+        self.assertEquals(len(result), 2)
+        self.assertEquals(result[0][0]['other'], "other2")
+        self.assertDictEqual(result[1][0], journeys[0])
 
     def get_time_string(self, offset):
         hours, mins = datetime.datetime.now().hour, datetime.datetime.now().minute

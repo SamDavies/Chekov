@@ -47,10 +47,18 @@ def live_locations(request):
     return render(request, "app/choose_route.html", {'nearest_buses': nearest_10, 'nearest_services': nearest_services})
 
 
-def find_services(buses):
-    """For each bus, concatenate its services"""
-    r = requests.get('https://tfe-opendata.com/api/v1/services')
-    services = r.json()["services"]
+def update_buttons(request):
+    """given the current selected buttons, find the new nearest button and miss out the selected"""
+    pass
+
+
+def find_a_journey(request):
+    """given the service in the get request find the closest journey both ways"""
+    lat = request.GET.get("lat")
+    lng = request.GET.get("lng")
+    service = request.GET.get('service')
+    destination = request.GET.get('destination')
+    closest_stop = get_next_stop(service, destination, lat, lng)
     pass
 
 
@@ -82,22 +90,48 @@ def convert_to_audio(my_string):
 
 def next_stop(request):
     """finds the next stop for the user's bus"""
-    """example request: http://127.0.0.1:8000/next_stop/?lat=55.864337&lng=-3.066306&num=2 """
+    """example request: http://127.0.0.1:8000/next_stop/?lat=55.864337&lng=-3.066306&num=2&destination=Gyle Centre"""
     lat = request.GET.get("lat")
     lng = request.GET.get("lng")
-    bus_id = str(request.GET.get("num"))
+    service = str(request.GET.get("num"))
+    destination = request.GET.get("destination")
 
-    journeys = requests.get('https://tfe-opendata.com/api/v1/journeys/'+bus_id).json()["journeys"]
+    journey, nearest_stop = get_journey(service, destination, lat, lng)
+
+    return render(request, "app/next_stop.html", {'stops': nearest_stop})
+
+
+def get_journey(service, destination, lat, lng):
+    journeys = requests.get('https://tfe-opendata.com/api/v1/journeys/'+service).json()["journeys"]
+    journeys = remove_bad_destinations(journeys, destination)
+
     api_stops = requests.get('https://tfe-opendata.com/api/v1/stops/').json()["stops"]
-    possible_stops = next_stops(journeys, api_stops)
-    closest_stop = nearest_to_me(possible_stops, lat, lng, 1)
+    possible_stops, possible_journeys = next_stops(journeys, api_stops)
+    nearest_stop = nearest_to_me(possible_stops, lat, lng, 1)
+    journey = get_matching_element(possible_journeys, possible_stops, nearest_stop)
 
-    return render(request, "app/next_stop.html", {'stops': closest_stop})
+    return journey, nearest_stop
+
+
+def get_matching_element(array1, array2, element):
+    """get the element from array1 who's index in array2 is the element"""
+    for x in range(0, len(array1)):
+        if array2[x] == element:
+            return array1[x]
+
+
+def remove_bad_destinations(array, good_destination):
+    good_array = []
+    for x in array:
+        if x['destination'] == good_destination:
+            good_array.append(x)
+    return good_array
 
 
 def next_stops(journeys, api_stops):
     """find stop for each journey based on the current time"""
     the_stops = []
+    the_journeys = []
 
     for journey in journeys:
         for departure in journey["departures"]:
@@ -105,8 +139,9 @@ def next_stops(journeys, api_stops):
                 stop_id = departure['stop_id']
                 s = get_stop(stop_id, api_stops)
                 the_stops.append(s)
+                the_journeys.append(journey)
                 break
-    return the_stops
+    return the_stops, the_journeys
 
 
 def get_stop(stop_id, api_stops):
