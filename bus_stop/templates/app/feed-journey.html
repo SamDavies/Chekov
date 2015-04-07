@@ -1,7 +1,7 @@
-{% for bus in nearest_buses %}
+{% for journey in journeys %}
     <div class="col-md-3">
         <div class="panel panel-default">
-            <div class="panel-heading"><b>{{ bus.service_name }} - East to {{ bus.destination }} </b></div>
+            <div class="panel-heading"><b>{{ journey.service_number }} - East to {{ journey.destination }} </b></div>
             <div class="panel-body">
                 <div class="container-fluid">
                     <div class="row">

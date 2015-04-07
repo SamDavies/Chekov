@@ -4,6 +4,7 @@ import math
 import requests
 import datetime
 import json
+import pytz
 
 
 #########
@@ -58,10 +59,13 @@ def get_feed(request):
     for service in services:
         service_number = str(service['service'])
         destination = str(service['destination'])
-        journeys.append(get_journey(service_number, destination, lat, lng))
+        journey, stop = get_journey(service_number, destination, lat, lng)
+        journey['service_number'] = service_number
+        journey['next_stop'] = service_number
+        journeys.append(journey)
 
-    j = json.dumps(journeys)
-    return HttpResponse(j, content_type='application/json')
+    print(journeys[0]['destination'])
+    return render(request, "app/feed-journey.html", {'journeys': journeys})
 
 
 def next_stop(request):
@@ -115,7 +119,7 @@ def get_journey(service, destination, lat, lng):
     api_stops = requests.get('https://tfe-opendata.com/api/v1/stops/').json()["stops"]
     possible_stops, possible_journeys = next_stops(journeys, api_stops)
     nearest_stop = nearest_to_me(possible_stops, lat, lng, 1)
-    journey = get_matching_element(possible_journeys, possible_stops, nearest_stop)
+    journey = get_matching_element(possible_journeys, possible_stops, nearest_stop[0])
 
     return journey, nearest_stop
 
@@ -162,7 +166,8 @@ def is_after_current_time(api_time):
     """compares a time against the current time to check if the bus has passed the stop already"""
     hours, minutes = api_time.split(":")
     expected_bus_time = int(hours) * 60 + int(minutes)
-    current_time = datetime.datetime.now().minute + (datetime.datetime.now().hour * 60)
+    utc = pytz.timezone('GMT')
+    current_time = datetime.datetime.now(utc).minute + (datetime.datetime.now(utc).hour * 60)
     return expected_bus_time >= current_time
 
 
