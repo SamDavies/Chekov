@@ -2,7 +2,7 @@ import datetime
 import json
 from django.test import TestCase
 from django.core.urlresolvers import reverse
-from bus_stop.views import nearest_to_me, next_stop, is_after_current_time, get_stop, next_stops
+from bus_stop.views import nearest_to_me, next_stop, is_after_current_time, get_stop, next_stops, get_previous_and_next
 
 
 class BusStopTest(TestCase):
@@ -78,6 +78,30 @@ class BusStopTest(TestCase):
     def get_time_string(self, offset):
         hours, mins = datetime.datetime.now().hour, datetime.datetime.now().minute
         return "{0}:{1}".format(str(hours), str(mins+offset))
+
+    def test_get_previous_and_next(self):
+        journey = dict(departures=[dict(stop_id=36235745), dict(stop_id=36235734), dict(stop_id=36235736),
+                                   dict(stop_id=36235712), dict(stop_id=98235712), dict(stop_id=76235712)])
+        stop = dict(stop_id=36235736)
+        three_stops = get_previous_and_next(stop, journey)
+        expected = [dict(stop_id=36235734), dict(stop_id=36235736), dict(stop_id=36235712)]
+        self.assertEquals(three_stops, expected)
+
+    def test_get_previous_and_next_first(self):
+        journey = dict(departures=[dict(stop_id=36235745), dict(stop_id=36235734), dict(stop_id=36235736),
+                                   dict(stop_id=36235712), dict(stop_id=98235712), dict(stop_id=76235712)])
+        stop = dict(stop_id=36235745)
+        three_stops = get_previous_and_next(stop, journey)
+        expected = [dict(stop_id=36235745), dict(stop_id=36235734)]
+        self.assertEquals(three_stops, expected)
+
+    def test_get_previous_and_next_last(self):
+        journey = dict(departures=[dict(stop_id=36235745), dict(stop_id=36235734), dict(stop_id=36235736),
+                                   dict(stop_id=36235712), dict(stop_id=98235712), dict(stop_id=76235712)])
+        stop = dict(stop_id=76235712)
+        three_stops = get_previous_and_next(stop, journey)
+        expected = [dict(stop_id=98235712), dict(stop_id=76235712)]
+        self.assertEquals(three_stops, expected)
 
     ##########
     # models #
