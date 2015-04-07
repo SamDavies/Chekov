@@ -53,16 +53,19 @@ def get_feed(request):
     lat = request.GET.get('lat')
     lng = request.GET.get('lng')
     services_json = request.GET.get('services')
+    buttons_json = request.GET.get('buttons')
     services = json.loads(services_json)
+    buttons = json.loads(buttons_json)
 
     journeys = []
     for service in services:
-        service_number = str(service['service'])
-        destination = str(service['destination'])
-        journey, stop = get_journey(service_number, destination, lat, lng)
-        journey['service_number'] = service_number
-        journey['next_stop'] = service_number
-        journeys.append(journey)
+        if service['service'] in buttons:
+            service_number = str(service['service'])
+            destination = str(service['destination'])
+            journey, stop = get_journey(service_number, destination, lat, lng)
+            journey['service_number'] = service_number
+            journey['next_stop'] = service_number
+            journeys.append(journey)
 
     print(journeys[0]['destination'])
     return render(request, "app/feed-journey.html", {'journeys': journeys})
