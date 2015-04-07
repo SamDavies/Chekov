@@ -88,7 +88,7 @@
         dynamicData["destination"] = destination;
         dynamicData['csrfmiddlewaretoken'] = getCookie('csrftoken');
         return $.ajax({
-            url: "get_feed/",
+            url: "../get_feed/",
             type: "get",
             data: dynamicData
         });
