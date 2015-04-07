@@ -29,11 +29,11 @@
             <div id="nearest-buses" data-feed="{{ data_feed }}">
 
                 {% for s in services %}
-                    <div class="col-md-3">
+                    <div class="col-md-3" data-service="{{ s.service_name }}" data-destination="{{ s.destination }}">
                         <div class="panel panel-default">
                             <div class="panel-heading"><b>{{ s.service_name }} to {{ s.destination }} </b></div>
                             <div class="panel-body">
-                                <div class="container-fluid"  data-service="{{ s.service_name }}" data-destination="{{ s.destination }}">
+                                <div class="container-fluid" data-service="{{ s.service_name }}" data-destination="{{ s.destination }}">
                                     <div class="row">
                                         <div class="col-xs-3" style="text-align: right; border-right: 1px solid #cfcfcf;">..:..</div>
                                         <div class="col-xs-9">fetching ...</div>
