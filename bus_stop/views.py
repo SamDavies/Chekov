@@ -40,20 +40,23 @@ def live_locations(request):
 
     # find the unique service numbers
     nearest_services = []
+    feed_data = []
     for bus in nearest_10:
+        feed_data.append(dict(service=bus["service_name"], destination=bus["destination"]))
+
         if bus["service_name"] not in nearest_services:
             nearest_services.append(bus["service_name"])
 
     print(str(len(live_bus_array)) + " buses found")
-    return render(request, "app/feed.html", {'nearest_buses': nearest_10, 'nearest_services': nearest_services})
+    return render(request, "app/feed.html", {'data_feed': json.dumps(feed_data), 'nearest_services': nearest_services})
 
 
 def get_feed(request):
     """given the service in the get request find the closest journey both ways"""
-    lat = request.GET.get('lat')
-    lng = request.GET.get('lng')
-    services_json = request.GET.get('services')
-    buttons_json = request.GET.get('buttons')
+    lat = request.POST.get('lat')
+    lng = request.POST.get('lng')
+    services_json = request.POST.get('services')
+    buttons_json = request.POST.get('buttons')
     services = json.loads(services_json)
     buttons = json.loads(buttons_json)
 
@@ -63,11 +66,12 @@ def get_feed(request):
             service_number = str(service['service'])
             destination = str(service['destination'])
             journey, stop = get_journey(service_number, destination, lat, lng)
-            journey['service_number'] = service_number
-            journey['next_stop'] = service_number
-            journeys.append(journey)
+            if journey is not None:
+                journey['service_number'] = service_number
+                journey['next_stop'] = service_number
+                journeys.append(journey)
 
-    print(journeys[0]['destination'])
+    print(journeys)
     return render(request, "app/feed-journey.html", {'journeys': journeys})
 
 
@@ -116,15 +120,21 @@ def convert_to_audio(my_string):
 
 
 def get_journey(service, destination, lat, lng):
-    journeys = requests.get('https://tfe-opendata.com/api/v1/journeys/'+service).json()["journeys"]
+    url = 'https://tfe-opendata.com/api/v1/journeys/'+service
+    journeys = requests.get(url).json()["journeys"]
+    print(len(journeys))
     journeys = remove_bad_destinations(journeys, destination)
+    print(len(journeys))
 
     api_stops = requests.get('https://tfe-opendata.com/api/v1/stops/').json()["stops"]
     possible_stops, possible_journeys = next_stops(journeys, api_stops)
     nearest_stop = nearest_to_me(possible_stops, lat, lng, 1)
-    journey = get_matching_element(possible_journeys, possible_stops, nearest_stop[0])
 
-    return journey, nearest_stop
+    if len(nearest_stop) != 0:
+        journey = get_matching_element(possible_journeys, possible_stops, nearest_stop[0])
+        return journey, nearest_stop
+    else:
+        return None, None
 
 
 def get_matching_element(array1, array2, element):
