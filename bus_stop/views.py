@@ -48,30 +48,24 @@ def live_locations(request):
             nearest_services.append(bus["service_name"])
 
     print(str(len(live_bus_array)) + " buses found")
-    print(nearest_10)
     return render(request, "app/feed.html", {'data_feed': json.dumps(feed_data), 'nearest_services': nearest_services,
                                              'services': nearest_10})
 
 
 def get_feed_element(request):
     """given the service in the get request find the closest journey both ways"""
-    lat = request.POST.get('lat')
-    lng = request.POST.get('lng')
-    services_json = request.POST.get('service')
-    buttons_json = request.POST.get('buttons')
-    print(services_json)
-    service = json.loads(services_json)
-    buttons = json.loads(buttons_json)
+    lat = request.GET.get('lat')
+    lng = request.GET.get('lng')
+    service = request.GET.get('service')
+    destination = request.GET.get('destination')
 
-    journey_html = []
-    if service['service'] in buttons:
-        service_number = str(service['service'])
-        destination = str(service['destination'])
-        journey, stop = get_journey(service_number, destination, lat, lng)
-        if journey is not None:
-            journey['service_number'] = service_number
-            journey['next_stop'] = service_number
-            journey_html = journey
+    journey, stop = get_journey(str(service), str(destination), lat, lng)
+    if journey is not None:
+        journey['service_number'] = service
+        journey['next_stop'] = service
+        journey_html = journey
+    else:
+        journey_html = ""
 
     return render(request, "app/feed-journey.html", {'journey': journey_html})
 

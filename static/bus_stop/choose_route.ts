@@ -79,27 +79,32 @@
         });
     }
 
-    function getFeed() {
+    function getFeed(service, destination, result) {
         getLocation();
         var dynamicData = {};
         dynamicData["lat"] = lat;
         dynamicData["lng"] = lng;
-        dynamicData["services"] = getServices();
-        dynamicData["buttons"] = getButtons();
+        dynamicData["service"] = service;
+        dynamicData["destination"] = destination;
         dynamicData['csrfmiddlewaretoken'] = getCookie('csrftoken');
         return $.ajax({
             url: "get_feed/",
-            type: "post",
+            type: "get",
             data: dynamicData
         });
     }
 
-    getFeed().done(function(data) {
-        // Updates the UI based the ajax result
-        var feed = $("#nearest-buses");
-        feed.empty();
-        feed.append(data);
-    });
+    function fetchAllJourneys(){
+        var feed = $("#nearest-buses").children();
+        $.each(feed, function(key, value){
+            var result = $(this).find('.container-fluid');
+
+            getFeed("3", "Clovenstone Drive", result).done(function(data) {
+                result.empty();
+                result.append(data);
+            });
+        });
+    }
 
     function getServices(){
         return $("#nearest-buses").attr('data-feed');
@@ -150,4 +155,6 @@
         }
         return cookieValue;
     }
+
+    fetchAllJourneys();
 }));
