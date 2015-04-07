@@ -110,7 +110,7 @@ class BusStopTest(TestCase):
         s_json = json.dumps(services)
         r = self.client.get(reverse("get_feed"), data=dict(lat='55.944373', lng='-3.186893', services=s_json))
         self.assertEqual(r.status_code, 200)
-        self.assertIn(b'Easter Road', r.content)
+        self.assertIn(b'Gyle Centre', r.content)
 
     #########
     # forms #
