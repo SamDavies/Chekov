@@ -18,19 +18,51 @@
     var chosenDiv = $("#chosen-routes");
     var lat = '0';
     var lng = '0';
+    var indexOf = function (needle) {
+        if (typeof Array.prototype.indexOf === 'function') {
+            indexOf = Array.prototype.indexOf;
+        }
+        else {
+            indexOf = function (needle) {
+                var i = -1, index = -1;
+                for (i = 0; i < this.length; i++) {
+                    if (this[i] === needle) {
+                        index = i;
+                        break;
+                    }
+                }
+                return index;
+            };
+        }
+        return indexOf.call(this, needle);
+    };
     availableDiv.on("click", "button", function () {
         addButton($(this).text(), chosenDiv, "btn btn-primary");
         $(this).remove();
-        getFeed();
+        refreshElements();
     });
     chosenDiv.on("click", "button", function () {
         addButton($(this).text(), availableDiv, "btn btn-default");
         $(this).remove();
-        getFeed();
+        refreshElements();
     });
     function addButton(button, div, cssClass) {
         var buttonHTML = '<button type="button" class="' + cssClass + '">' + button + '</button> ';
         div.prepend(buttonHTML);
+    }
+    function refreshElements() {
+        var buttons = getFilterButtons();
+        var feed = $("#nearest-buses").children();
+        $.each(feed, function (key, value) {
+            var service = $(this).attr('data-service');
+            var index = indexOf.call(buttons, service);
+            if (index != -1) {
+                $(this).show();
+            }
+            else {
+                $(this).hide();
+            }
+        });
     }
     function getFeed() {
         getLocation();
@@ -56,6 +88,10 @@
         return $("#nearest-buses").attr('data-feed');
     }
     function getButtons() {
+        var buttons = getFilterButtons();
+        return JSON.stringify(buttons);
+    }
+    function getFilterButtons() {
         var buttons = chosenDiv.children();
         if (buttons.length == 0) {
             buttons = availableDiv.children();
@@ -64,8 +100,7 @@
         $.each(buttons, function (key, value) {
             buttons_data.push($(this).text());
         });
-        alert(buttons_data);
-        return JSON.stringify(buttons_data);
+        return buttons_data;
     }
     function getLocation() {
         if (navigator.geolocation) {

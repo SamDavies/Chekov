@@ -106,15 +106,13 @@ class BusStopTest(TestCase):
 
     def test_get_feed(self):
         """ensure that the live buses page loads"""
-        services = [dict(service='3', destination="Clovenstone Drive"), dict(service='2', destination="Gyle Centre")]
+        services = dict(service='3', destination="Clovenstone Drive")
         buttons = ['3']
         s_json = json.dumps(services)
         b_json = json.dumps(buttons)
-        data = dict(lat='55.944373', lng='-3.186893', services=s_json, buttons=b_json)
+        data = dict(lat='55.944373', lng='-3.186893', service=s_json, buttons=b_json)
         r = self.client.post(reverse("get_feed"), data=data)
         self.assertEqual(r.status_code, 200)
-        self.assertNotIn(b'Gyle Centre', r.content)
-        self.assertIn(b'Clovenstone', r.content)
 
     #########
     # forms #

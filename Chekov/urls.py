@@ -12,7 +12,7 @@ urlpatterns = patterns('',
 
     url(r'^live_buses/$', app_views.live_locations, name='live_buses'),
 
-    url(r'^get_feed/$', app_views.get_feed, name='get_feed'),
+    url(r'^get_feed/$', app_views.get_feed_element, name='get_feed'),
 
     url(r'^next_stop/$', app_views.next_stop, name='next_stop'),
 
