@@ -80,27 +80,28 @@ class BusStopTest(TestCase):
         return "{0}:{1}".format(str(hours), str(mins+offset))
 
     def test_get_previous_and_next(self):
-        journey = dict(departures=[dict(stop_id=36235745), dict(stop_id=36235734), dict(stop_id=36235736),
-                                   dict(stop_id=36235712), dict(stop_id=98235712), dict(stop_id=76235712)])
-        stop = dict(stop_id=36235736)
+        journey = dict(departures=[dict(stop_id=95624796), dict(stop_id=36234956), dict(stop_id=36234959),
+                                   dict(stop_id=36234945), dict(stop_id=36234939), dict(stop_id=36237546)])
+        stop = dict(stop_id=36234959)
         three_stops = get_previous_and_next(stop, journey)
-        expected = [dict(stop_id=36235734), dict(stop_id=36235736), dict(stop_id=36235712)]
+        expected = [dict(name='Main Street', stop_id=36234956), dict(name='Bavelaw Road', stop_id=36234959),
+                    dict(name='Bavelaw Rd bridge', stop_id=36234945)]
         self.assertEquals(three_stops, expected)
 
     def test_get_previous_and_next_first(self):
-        journey = dict(departures=[dict(stop_id=36235745), dict(stop_id=36235734), dict(stop_id=36235736),
-                                   dict(stop_id=36235712), dict(stop_id=98235712), dict(stop_id=76235712)])
-        stop = dict(stop_id=36235745)
+        journey = dict(departures=[dict(stop_id=95624796), dict(stop_id=36234956), dict(stop_id=36234959),
+                                   dict(stop_id=36234945), dict(stop_id=36234939), dict(stop_id=36237546)])
+        stop = dict(stop_id=95624796)
         three_stops = get_previous_and_next(stop, journey)
-        expected = [dict(stop_id=36235745), dict(stop_id=36235734)]
+        expected = [dict(name='Deans South', stop_id=95624796), dict(name='Main Street', stop_id=36234956)]
         self.assertEquals(three_stops, expected)
 
     def test_get_previous_and_next_last(self):
-        journey = dict(departures=[dict(stop_id=36235745), dict(stop_id=36235734), dict(stop_id=36235736),
-                                   dict(stop_id=36235712), dict(stop_id=98235712), dict(stop_id=76235712)])
-        stop = dict(stop_id=76235712)
+        journey = dict(departures=[dict(stop_id=95624796), dict(stop_id=36234956), dict(stop_id=36234959),
+                                   dict(stop_id=36234945), dict(stop_id=36234939), dict(stop_id=36237546)])
+        stop = dict(stop_id=36237546)
         three_stops = get_previous_and_next(stop, journey)
-        expected = [dict(stop_id=98235712), dict(stop_id=76235712)]
+        expected = [dict(name='Lanark Road West', stop_id=36234939), dict(name='Newmills Road', stop_id=36237546)]
         self.assertEquals(three_stops, expected)
 
     ##########
