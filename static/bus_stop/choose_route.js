@@ -80,9 +80,12 @@
     }
     function fetchAllJourneys() {
         var feed = $("#nearest-buses").children();
+        alert(feed.length);
         $.each(feed, function (key, value) {
             var result = $(this).find('.container-fluid');
-            getFeed("3", "Clovenstone Drive", result).done(function (data) {
+            var service = result.attr('data-service');
+            var destination = result.attr('data-destination');
+            getFeed(service, destination, result).done(function (data) {
                 result.empty();
                 result.append(data);
             });

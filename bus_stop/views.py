@@ -70,6 +70,10 @@ def get_feed_element(request):
     return render(request, "app/feed-journey.html", {'journey': journey_html})
 
 
+def get_previous_and_next(stop, journey):
+    pass
+
+
 def next_stop(request):
     """finds the next stop for the user's bus"""
     """example request: http://127.0.0.1:8000/next_stop/?lat=55.864337&lng=-3.066306&num=2&destination=Gyle Centre"""
