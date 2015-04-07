@@ -62,26 +62,35 @@ def get_feed_element(request):
     journey, stop = get_journey(str(service), str(destination), lat, lng)
     if journey is not None:
         journey['service_number'] = service
-        journey['next_stop'] = service
-        journey_html = journey
+        three_stops = get_previous_and_next(stop, journey)
     else:
-        journey_html = ""
+        three_stops = ""
 
-    return render(request, "app/feed-journey.html", {'journey': journey_html})
+    return render(request, "app/feed-journey.html", {'three_stops': three_stops})
 
 
 def get_previous_and_next(stop, journey):
     departures = journey['departures']
+    api_stops = requests.get('https://tfe-opendata.com/api/v1/stops/').json()["stops"]
     length = len(departures)
     for i in range(length):
         if departures[i]['stop_id'] == stop['stop_id']:
             if i != 0 and i != length-1:
-                return [departures[i-1], departures[i], departures[i+1]]
+                return get_above_below(-1, 1, departures, i, api_stops)
             else:
                 if i == 0:
-                    return [departures[i], departures[i+1]]
+                    return get_above_below(0, 1, departures, i, api_stops)
                 else:
-                    return [departures[i-1], departures[i]]
+                    return get_above_below(-1, 0, departures, i, api_stops)
+
+
+def get_above_below(above, below, departures, index, api_stops):
+    three_departures = []
+    for j in range(above, below+1):
+        d = departures[index+j]
+        d['name'] = get_stop(d['stop_id'], api_stops)['name']
+        three_departures.append(d)
+    return three_departures
 
 
 def next_stop(request):
@@ -139,7 +148,7 @@ def get_journey(service, destination, lat, lng):
 
     if len(nearest_stop) != 0:
         journey = get_matching_element(possible_journeys, possible_stops, nearest_stop[0])
-        return journey, nearest_stop
+        return journey, nearest_stop[0]
     else:
         return None, None
 
