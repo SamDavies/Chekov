@@ -80,7 +80,6 @@
     }
     function fetchAllJourneys() {
         var feed = $("#nearest-buses").children();
-        alert(feed.length);
         $.each(feed, function (key, value) {
             var result = $(this).find('.container-fluid');
             var service = result.attr('data-service');

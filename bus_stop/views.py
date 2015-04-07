@@ -71,7 +71,17 @@ def get_feed_element(request):
 
 
 def get_previous_and_next(stop, journey):
-    pass
+    departures = journey['departures']
+    length = len(departures)
+    for i in range(length):
+        if departures[i]['stop_id'] == stop['stop_id']:
+            if i != 0 and i != length-1:
+                return [departures[i-1], departures[i], departures[i+1]]
+            else:
+                if i == 0:
+                    return [departures[i], departures[i+1]]
+                else:
+                    return [departures[i-1], departures[i]]
 
 
 def next_stop(request):
