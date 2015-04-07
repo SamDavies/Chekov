@@ -11,7 +11,7 @@ class BusFinderTest(TestCase):
 
     def test_add_remove_service(self):
         """try adding two buttons then removing one"""
-        self.driver.get("http://localhost:8000/?lat=55.9443730&lng=-3.1868930")
+        self.driver.get("http://localhost:8000/feed/?lat=55.9443730&lng=-3.1868930")
 
         self.add_chosen_services()
         self.add_chosen_services()

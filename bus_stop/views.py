@@ -19,7 +19,7 @@ def speech(request):
     #                "can't be late, Gotta get groovin', just can't wait. ho!"
     audio_string = "O-oh O-oh! Throw your hands in the air. O-oh O-oh! Like you just don't care. " \
                    "O-oh O-oh! There's a party over here. O-oh O-oh! There's a party over there"
-    return render(request, "app/home.html", {'audio_string': convert_to_audio((audio_string))})
+    return render(request, "app/speech.html", {'audio_string': convert_to_audio((audio_string))})
 
 
 def stops(request):
@@ -28,6 +28,10 @@ def stops(request):
     stops_array = r.json()["stops"]
     print(str(len(stops_array)) + " stops found")
     return render(request, "app/stops.html", {'stops_array': stops_array})
+
+
+def home(request):
+    return render(request, "app/home.html")
 
 
 def live_locations(request):

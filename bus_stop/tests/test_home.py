@@ -112,6 +112,11 @@ class BusStopTest(TestCase):
     # views (uses reverse) #
     ########################
 
+    def test_home_load(self):
+        """ensure that the home page loads"""
+        response = self.client.get(reverse("home"))
+        self.assertEqual(response.status_code, 200)
+
     def test_stops_load(self):
         """ensure that the stops page loads"""
         response = self.client.get(reverse("stops"))
@@ -124,13 +129,13 @@ class BusStopTest(TestCase):
         self.assertEqual(response.status_code, 200)
 
     def test_next_stop_load(self):
-        """ensure that the live buses page loads"""
+        """ensure that the next stop page loads"""
         response = self.client.get(reverse("next_stop"), data=dict(lat='55.9443730', lng='-3.1868930', num=2,
                                                                    destination="Gyle Centre"))
         self.assertEqual(response.status_code, 200)
 
     def test_get_feed(self):
-        """ensure that the live buses page loads"""
+        """ensure that the feed page loads"""
         data = dict(lat='55.944373', lng='-3.186893', service='3', destination="Clovenstone Drive")
         r = self.client.get(reverse("get_feed"), data=data)
         self.assertEqual(r.status_code, 200)
