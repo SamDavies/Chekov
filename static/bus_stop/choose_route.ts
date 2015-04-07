@@ -62,7 +62,6 @@
     getFeed().done(function(data) {
         // Updates the UI based the ajax result
         var feed = $("#nearest-buses");
-        alert(data);
         feed.empty();
         feed.append(data);
     });
@@ -72,7 +71,16 @@
     }
 
     function getButtons(){
-        return JSON.stringify(["3", "5", "7", "31"]);
+        var buttons = chosenDiv.children();
+        if(buttons.length == 0){
+            buttons = availableDiv.children();
+        }
+        var buttons_data = [];
+        $.each(buttons, function(key, value){
+            buttons_data.push($(this).text());
+        });
+        alert(buttons_data);
+        return JSON.stringify(buttons_data);
     }
 
     function getLocation() {
