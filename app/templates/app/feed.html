@@ -17,8 +17,8 @@
 
             <!-- Available Routes -->
             <div id="available-routes">
-                {% for service in nearest_services %}
-                    <button type="button" class="btn btn-default">{{ service }}</button>
+                {% for button in buttons %}
+                    <button type="button" class="btn btn-default">{{ button }}</button>
                 {% endfor %}
             </div>
         </div>
@@ -57,6 +57,6 @@
     </div>
 
     {% load staticfiles %}
-    <script src="{% static "bus_stop/choose_route.js" %}"></script>
+    <script src="{% static "bus_stop/feed.js" %}"></script>
 
 {% endblock %}

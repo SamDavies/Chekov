@@ -137,4 +137,4 @@
     }
     fetchAllJourneys();
 }));
-//# sourceMappingURL=choose_route.js.map
+//# sourceMappingURL=feed.js.map

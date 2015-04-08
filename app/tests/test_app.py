@@ -2,7 +2,7 @@ import datetime
 import json
 from django.test import TestCase
 from django.core.urlresolvers import reverse
-from bus_stop.views import nearest_to_me, next_stop, is_after_current_time, get_stop, next_stops, get_previous_and_next
+from app.views import nearest_to_me, next_stop, is_after_current_time, get_stop, next_stops, get_previous_and_next
 
 
 class BusStopTest(TestCase):

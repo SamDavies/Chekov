@@ -12,4 +12,4 @@ function saveLocation(position) {
     window.location.replace("/feed/?lat=" + lat + "&lng=" + lng);
 }
 getLocation();
-//# sourceMappingURL=home.js.map
+//# sourceMappingURL=proxy.js.map

@@ -1,9 +1,7 @@
-from django.http import HttpResponse
 from django.shortcuts import render
 import math
 import requests
 import datetime
-import json
 import pytz
 
 
@@ -13,13 +11,9 @@ import pytz
 
 def speech(request):
     """some sweet sweet audio"""
-    # audio_string = "Don't stop, never give up, hold your head high and reach the top, " \
-    #                "let the world see what you have got, bring it all back to you"
-    # audio_string = "Finally Friday night, Feelin' kinda good, lookin' alright, Gotta get movin', " \
-    #                "can't be late, Gotta get groovin', just can't wait. ho!"
     audio_string = "O-oh O-oh! Throw your hands in the air. O-oh O-oh! Like you just don't care. " \
                    "O-oh O-oh! There's a party over here. O-oh O-oh! There's a party over there"
-    return render(request, "app/speech.html", {'audio_string': convert_to_audio((audio_string))})
+    return render(request, "app/sample/speech.html", {'audio_string': convert_to_audio((audio_string))})
 
 
 def stops(request):
@@ -27,37 +21,37 @@ def stops(request):
     r = requests.get('https://tfe-opendata.com/api/v1/stops')
     stops_array = r.json()["stops"]
     print(str(len(stops_array)) + " stops found")
-    return render(request, "app/stops.html", {'stops_array': stops_array})
+    return render(request, "app/sample/stops.html", {'stops_array': stops_array})
 
 
-def home(request):
-    return render(request, "app/home.html")
+def proxy_locator(request):
+    return render(request, "app/feed-proxy.html")
 
 
-def live_locations(request):
-    """fetch all the stops into an array created from json"""
+def feed(request):
+    """Find the X nearest buses to the location and display the home page"""
     r = requests.get('https://tfe-opendata.com/api/v1/vehicle_locations')
     live_bus_array = r.json()["vehicles"]
     my_lat = request.GET.get('lat')
     my_lng = request.GET.get('lng')
-    nearest_10 = nearest_to_me(live_bus_array, my_lat, my_lng, 20)
+    nearest_20 = nearest_to_me(live_bus_array, my_lat, my_lng, 20)
 
     # find the unique service numbers
     nearest_services = []
-    feed_data = []
-    for bus in nearest_10:
-        feed_data.append(dict(service=bus["service_name"], destination=bus["destination"]))
-
-        if bus["service_name"] not in nearest_services and bus["service_name"] is not None:
-            nearest_services.append(bus["service_name"])
+    buttons = []
+    for bus in nearest_20:
+        if bus["service_name"] is not None:
+            nearest_services.append(bus)
+            # only add if it doesn't already exist
+            if bus["service_name"] not in buttons:
+                buttons.append(bus["service_name"])
 
     print(str(len(live_bus_array)) + " buses found")
-    return render(request, "app/feed.html", {'data_feed': json.dumps(feed_data), 'nearest_services': nearest_services,
-                                             'services': nearest_10})
+    return render(request, "app/feed.html", {'buttons': buttons, 'services': nearest_services})
 
 
 def get_feed_element(request):
-    """given the service in the get request find the closest journey both ways"""
+    """given the service and the destination, return the most relevant 3 stops on the journey"""
     lat = request.GET.get('lat')
     lng = request.GET.get('lng')
     service = request.GET.get('service')
@@ -71,30 +65,6 @@ def get_feed_element(request):
         three_stops = ""
 
     return render(request, "app/feed-journey.html", {'three_stops': three_stops})
-
-
-def get_previous_and_next(stop, journey):
-    departures = journey['departures']
-    api_stops = requests.get('https://tfe-opendata.com/api/v1/stops/').json()["stops"]
-    length = len(departures)
-    for i in range(length):
-        if departures[i]['stop_id'] == stop['stop_id']:
-            if i != 0 and i != length-1:
-                return get_above_below(-1, 1, departures, i, api_stops)
-            else:
-                if i == 0:
-                    return get_above_below(0, 1, departures, i, api_stops)
-                else:
-                    return get_above_below(-1, 0, departures, i, api_stops)
-
-
-def get_above_below(above, below, departures, index, api_stops):
-    three_departures = []
-    for j in range(above, below+1):
-        d = departures[index+j]
-        d['name'] = get_stop(d['stop_id'], api_stops)['name']
-        three_departures.append(d)
-    return three_departures
 
 
 def next_stop(request):
@@ -114,9 +84,30 @@ def next_stop(request):
 # Helpers #
 ###########
 
-def update_buttons(request):
-    """given the current selected buttons, find the new nearest button and miss out the selected"""
-    pass
+def get_previous_and_next(stop, journey):
+    """find the previous and next stop on the journey from the given stop"""
+    departures = journey['departures']
+    api_stops = requests.get('https://tfe-opendata.com/api/v1/stops/').json()["stops"]
+    length = len(departures)
+    for i in range(length):
+        if departures[i]['stop_id'] == stop['stop_id']:
+            if i != 0 and i != length-1:
+                return get_above_below(-1, 1, departures, i, api_stops)
+            else:
+                if i == 0:
+                    return get_above_below(0, 1, departures, i, api_stops)
+                else:
+                    return get_above_below(-1, 0, departures, i, api_stops)
+
+
+def get_above_below(above, below, departures, index, api_stops):
+    """return the stops below and above the index and attach the stop name"""
+    three_departures = []
+    for j in range(above, below+1):
+        d = departures[index+j]
+        d['name'] = get_stop(d['stop_id'], api_stops)['name']
+        three_departures.append(d)
+    return three_departures
 
 
 def nearest_to_me(things, my_lat, my_lng, count):
@@ -130,11 +121,6 @@ def nearest_to_me(things, my_lat, my_lng, count):
     return sorted_buses[:count]
 
 
-def choose_route(request):
-    """pick the route to read out"""
-    return render(request, "app/feed.html")
-
-
 def convert_to_audio(my_string):
     """Converts string to a form which can be read aloud by text-to-speech API"""
     my_string.replace(" ", "+")
@@ -142,6 +128,7 @@ def convert_to_audio(my_string):
 
 
 def get_journey(service, destination, lat, lng):
+    """find the most likely journey based on the service, its destination and your position"""
     url = 'https://tfe-opendata.com/api/v1/journeys/'+service
     journeys = requests.get(url).json()["journeys"]
     journeys = remove_bad_destinations(journeys, destination)
@@ -165,6 +152,7 @@ def get_matching_element(array1, array2, element):
 
 
 def remove_bad_destinations(array, good_destination):
+    """remove all destinations from the array which are not the same as the good destination"""
     good_array = []
     for x in array:
         if x['destination'] == good_destination:
@@ -173,7 +161,7 @@ def remove_bad_destinations(array, good_destination):
 
 
 def next_stops(journeys, api_stops):
-    """find stop for each journey based on the current time"""
+    """find the next stop for each journey based on the current time"""
     the_stops = []
     the_journeys = []
 
