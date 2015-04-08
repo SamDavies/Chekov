@@ -48,7 +48,7 @@ def live_locations(request):
     for bus in nearest_10:
         feed_data.append(dict(service=bus["service_name"], destination=bus["destination"]))
 
-        if bus["service_name"] not in nearest_services:
+        if bus["service_name"] not in nearest_services and bus["service_name"] is not None:
             nearest_services.append(bus["service_name"])
 
     print(str(len(live_bus_array)) + " buses found")
