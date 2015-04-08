@@ -22,7 +22,7 @@
 
     var lat: String = '0';
     var lng: String = '0';
-    var nextStop: String = $('#result').find(".panel.panel-default").attr('data-stop');
+    var nextStop: String = $('#result').find("#bus-data").attr('data-stop');
 
     function getData(service, destination, result) {
         getLocation();
@@ -70,7 +70,7 @@
 
     function refresh(){
         var resultDiv = $('#result');
-        var panelDiv = resultDiv.find(".panel.panel-default");
+        var panelDiv = resultDiv.find("#bus-data");
 
         var service = panelDiv.attr('data-service');
         var destination = panelDiv.attr('data-destination');

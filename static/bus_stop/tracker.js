@@ -15,7 +15,7 @@
     /////////////////////////////////
     var lat = '0';
     var lng = '0';
-    var nextStop = $('#result').find(".panel.panel-default").attr('data-stop');
+    var nextStop = $('#result').find("#bus-data").attr('data-stop');
     function getData(service, destination, result) {
         getLocation();
         var dynamicData = {};
@@ -59,7 +59,7 @@
     }
     function refresh() {
         var resultDiv = $('#result');
-        var panelDiv = resultDiv.find(".panel.panel-default");
+        var panelDiv = resultDiv.find("#bus-data");
         var service = panelDiv.attr('data-service');
         var destination = panelDiv.attr('data-destination');
         var stop = panelDiv.attr('data-stop');
