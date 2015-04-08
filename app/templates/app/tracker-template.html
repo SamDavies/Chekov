@@ -2,6 +2,32 @@
 
 {% block main %}
 
+    <script>
+    //location.reload(true)
+
+    function getLocation() {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(saveLocation);
+        }
+        else {
+            alert("Geolocation is not supported by this browser.");
+        }
+    }
+    function saveLocation(position) {
+        lat = String(position.coords.latitude);
+        lng = String(position.coords.longitude);
+    }
+
+    function refresh(){
+        window.location.href = "?lat="+ "55.7923506" +"&lng="+ "55.7923506" +"&service={{ service }}&destination={{ destination }}"
+    }
+
+    setInterval(function(){ refresh(); }, 7000);
+
+
+
+    </script>
+
     <audio autoplay>
         <source src="http://tts-api.com/tts.mp3?q=your+next+stop+is+{{ audio_string }}." type="audio/mpeg">
         Your browser does not support the audio element.
