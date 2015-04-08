@@ -16,6 +16,7 @@
     var chosenRoute = [];
     var availableDiv = $("#available-routes");
     var chosenDiv = $("#chosen-routes");
+    var feedDiv = $("#nearest-buses");
     var lat = '0';
     var lng = '0';
     var indexOf = function (needle) {
@@ -50,6 +51,14 @@
         var buttonHTML = '<button type="button" class="' + cssClass + '">' + button + '</button> ';
         div.prepend(buttonHTML);
     }
+    feedDiv.on("click", ".panel", function () {
+        $(this).removeClass("panel-default");
+        $(this).addClass("panel-primary");
+        var parent = $(this).parent();
+        var service = parent.attr('data-service');
+        var destination = parent.attr('data-destination');
+        window.location.replace("/../tracker/?lat=" + lat + "&lng=" + lng + "&service=" + service + "&destination=" + destination);
+    });
     function refreshElements() {
         var buttons = getFilterButtons();
         var feed = $("#nearest-buses").children();

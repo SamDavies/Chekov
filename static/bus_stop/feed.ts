@@ -23,6 +23,7 @@
 
     var availableDiv: String = $("#available-routes");
     var chosenDiv: String = $("#chosen-routes");
+    var feedDiv: String = $("#nearest-buses");
 
     var lat: String = '0';
     var lng: String = '0';
@@ -64,6 +65,15 @@
         var buttonHTML : String = '<button type="button" class="' + cssClass +'">' + button + '</button> ';
         div.prepend(buttonHTML);
     }
+
+    feedDiv.on("click", ".panel", function() {
+        $(this).removeClass("panel-default");
+        $(this).addClass("panel-primary");
+        var parent = $(this).parent();
+        var service = parent.attr('data-service');
+        var destination = parent.attr('data-destination');
+        window.location.replace("/../tracker/?lat=" + lat + "&lng=" + lng + "&service=" + service + "&destination=" + destination);
+    });
 
     function refreshElements(){
         var buttons = getFilterButtons();
