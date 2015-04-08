@@ -128,16 +128,16 @@ class BusStopTest(TestCase):
         response = self.client.get(reverse("live_buses"), data=dict(lat='55.9443730', lng='-3.1868930'))
         self.assertEqual(response.status_code, 200)
 
-    def test_next_stop_load(self):
-        """ensure that the next stop page loads"""
-        response = self.client.get(reverse("next_stop"), data=dict(lat='55.9443730', lng='-3.1868930', num=2,
-                                                                   destination="Gyle Centre"))
-        self.assertEqual(response.status_code, 200)
-
     def test_get_feed(self):
         """ensure that the feed page loads"""
         data = dict(lat='55.944373', lng='-3.186893', service='3', destination="Clovenstone Drive")
         r = self.client.get(reverse("get_feed"), data=data)
+        self.assertEqual(r.status_code, 200)
+
+    def test_tracker(self):
+        """ensure that the tracker page loads"""
+        data = dict(lat='55.944373', lng='-3.186893', service='3', destination="Clovenstone Drive")
+        r = self.client.get(reverse("tracker"), data=data)
         self.assertEqual(r.status_code, 200)
 
     #########
