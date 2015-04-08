@@ -212,7 +212,7 @@ def is_after_current_time(api_time):
     hours, minutes = api_time.split(":")
     expected_bus_time = int(hours) * 60 + int(minutes)
     utc = pytz.timezone('GMT')
-    current_time = datetime.datetime.now(utc).minute + (datetime.datetime.now(utc).hour * 60)
+    current_time = datetime.datetime.now(utc).minute + ((datetime.datetime.now(utc).hour+1) * 60)
     return expected_bus_time >= current_time
 
 
