@@ -1,6 +1,12 @@
 {% extends "app/base.html" %}
 
 {% block main %}
+
+    <audio autoplay>
+        <source src="http://tts-api.com/tts.mp3?q=your+next+stop+is+{{ audio_string }}." type="audio/mpeg">
+        Your browser does not support the audio element.
+    </audio>
+
     <div class="container-fluid">
         <div class="row">
             <div class="col-md-6">
@@ -34,4 +40,6 @@
             </div>
         </div>
     </div>
+
+
 {% endblock %}

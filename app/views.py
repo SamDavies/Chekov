@@ -75,14 +75,20 @@ def tracker(request):
     destination = request.GET.get('destination')
 
     journey, stop = get_journey(str(service), str(destination), lat, lng)
+
+
+
     if journey is not None:
         journey['service_number'] = service
         three_stops = get_previous_and_next(stop, journey)
+        audio_string = convert_to_audio(three_stops[1]["name"] + " at " + three_stops[1]["time"])
     else:
         three_stops = ""
+        audio_string = convert_to_audio("None. My apologies an error has occurred. Please prepare for self destruction")
+
 
     return render(request, "app/tracker-template.html", {'three_stops': three_stops, 'service': service,
-                                                         'destination': destination})
+                                                         'destination': destination, 'audio_string': audio_string})
 
 
 def next_stop(request):
