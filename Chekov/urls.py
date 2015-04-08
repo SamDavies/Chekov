@@ -16,5 +16,7 @@ urlpatterns = patterns('',
 
     url(r'^tracker/$', app_views.tracker, name='tracker'),
 
+    url(r'^tracker_data/$', app_views.tracker_data, name='tracker_data'),
+
     url(r'^admin/', include(admin.site.urls)),
 )

@@ -1,6 +1,18 @@
 {% extends "app/base.html" %}
+
 {% block main %}
 
-next stop_id and time - {{ stops }}
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-6">
+                <div id="result">
+                    {% include "app/tracker-data.html" %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% load staticfiles %}
+    <script src="{% static "bus_stop/tracker.js" %}"></script>
 
 {% endblock %}

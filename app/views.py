@@ -74,21 +74,23 @@ def tracker(request):
     service = request.GET.get('service')
     destination = request.GET.get('destination')
 
-    journey, stop = get_journey(str(service), str(destination), lat, lng)
+    three_stops, audio_string = get_bus_data(lat, lng, service, destination)
+
+    return render(request, "app/tracker.html", {'three_stops': three_stops, 'service': service,
+                                                'destination': destination, 'audio_string': audio_string})
 
 
+def tracker_data(request):
+    """tracking of a single bus"""
+    lat = request.GET.get('lat')
+    lng = request.GET.get('lng')
+    service = request.GET.get('service')
+    destination = request.GET.get('destination')
 
-    if journey is not None:
-        journey['service_number'] = service
-        three_stops = get_previous_and_next(stop, journey)
-        audio_string = convert_to_audio(three_stops[1]["name"] + " at " + three_stops[1]["time"])
-    else:
-        three_stops = ""
-        audio_string = convert_to_audio("None. My apologies an error has occurred. Please prepare for self destruction")
+    three_stops, audio_string = get_bus_data(lat, lng, service, destination)
 
-
-    return render(request, "app/tracker-template.html", {'three_stops': three_stops, 'service': service,
-                                                         'destination': destination, 'audio_string': audio_string})
+    return render(request, "app/tracker-data.html", {'three_stops': three_stops, 'service': service,
+                                                     'destination': destination, 'audio_string': audio_string})
 
 
 def next_stop(request):
@@ -107,6 +109,19 @@ def next_stop(request):
 ###########
 # Helpers #
 ###########
+
+def get_bus_data(lat, lng, service, destination):
+    journey, stop = get_journey(str(service), str(destination), lat, lng)
+    if journey is not None:
+        journey['service_number'] = service
+        three_stops = get_previous_and_next(stop, journey)
+        audio_string = convert_to_audio(three_stops[1]["name"] + " at " + three_stops[1]["time"])
+    else:
+        three_stops = ""
+        audio_string = convert_to_audio("None. My apologies an error has occurred. Please prepare for self destruction")
+
+    return three_stops, audio_string
+
 
 def get_previous_and_next(stop, journey):
     """find the previous and next stop on the journey from the given stop"""

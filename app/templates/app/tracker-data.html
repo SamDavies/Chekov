@@ -1,0 +1,32 @@
+<audio id="stop-audio">
+    <source src="http://tts-api.com/tts.mp3?q=your+next+stop+is+{{ audio_string }}." type="audio/mpeg">
+    Your browser does not support the audio element.
+</audio>
+
+<div class="panel panel-default"  data-service="{{ service }}" data-destination="{{ destination }}" data-stop="{{ three_stops.0.name }}">
+    <div class="panel-heading">{{ service }} - East to {{ destination }} </div>
+    <div class="panel-body">
+        <div class="row">
+            <div class="col-xs-3" style="text-align: right; border-right: 1px solid #cfcfcf;">00:00</div>
+            <div class="col-xs-9">Start</div>
+        </div>
+        <div class="row">
+            <div class="col-xs-3" style="text-align: right; border-right: 1px solid #cfcfcf;">...</div>
+            <div class="col-xs-9">...</div>
+        </div>
+        {% for stop in three_stops %}
+            <div class="row">
+                <div class="col-xs-3" style="text-align: right; border-right: 1px solid #cfcfcf;">{{ stop.time }}</div>
+                <div class="col-xs-9">{{ stop.name }}</div>
+            </div>
+        {% endfor %}
+        <div class="row">
+            <div class="col-xs-3" style="text-align: right; border-right: 1px solid #cfcfcf;">...</div>
+            <div class="col-xs-9">...</div>
+        </div>
+        <div class="row">
+            <div class="col-xs-3" style="text-align: right; border-right: 1px solid #cfcfcf;">24:00</div>
+            <div class="col-xs-9">End</div>
+        </div>
+    </div>
+</div>
