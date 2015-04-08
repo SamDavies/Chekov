@@ -15,7 +15,12 @@
     <!-- Latest compiled and minified JavaScript -->
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
 
-    <script src="http://maps.googleapis.com/maps/api/js"></script>
+    <!-- LeafletJS/map -->
+    <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.css" />
+    <script src="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.js"></script>
+    <style>
+        #tracker-map { height: 180px; }
+    </style>
 
     <script src="{% static "setUpMap.js" %}"></script>
 
