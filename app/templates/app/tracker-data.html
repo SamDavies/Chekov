@@ -11,8 +11,8 @@
         <div class="list-group">
             <div class="list-group-item">
                 <div class="row">
-                    <div class="col-xs-3" style="text-align: right; border-right: 1px solid #cfcfcf;">00:00</div>
-                    <div class="col-xs-9">Start</div>
+                    <div class="col-xs-3" style="text-align: right; border-right: 1px solid #cfcfcf;">{{ start_point.time }}</div>
+                    <div class="col-xs-9">{{ start_point.stop.name }} ({{ start_point.stop.locality }})</div>
                 </div>
             </div>
             <div class="list-group-item">
@@ -47,8 +47,8 @@
             </div>
             <div class="list-group-item">
                 <div class="row">
-                    <div class="col-xs-3" style="text-align: right; border-right: 1px solid #cfcfcf;">24:00</div>
-                    <div class="col-xs-9">End</div>
+                    <div class="col-xs-3" style="text-align: right; border-right: 1px solid #cfcfcf;">{{ end_point.time }}</div>
+                    <div class="col-xs-9">{{ end_point.stop.name }} ({{ end_point.stop.locality }})</div>
                 </div>
             </div>
         </div>

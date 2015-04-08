@@ -74,10 +74,11 @@ def tracker(request):
     service = request.GET.get('service')
     destination = request.GET.get('destination')
 
-    three_stops, audio_string = get_bus_data(lat, lng, service, destination)
+    three_stops, audio_string, start_point, end_point  = get_bus_data(lat, lng, service, destination)
 
     return render(request, "app/tracker.html", {'three_stops': three_stops, 'service': service,
-                                                'destination': destination, 'audio_string': audio_string})
+                                                'destination': destination, 'audio_string': audio_string,
+                                                'start_point': start_point, 'end_point': end_point})
 
 
 def tracker_data(request):
@@ -87,10 +88,11 @@ def tracker_data(request):
     service = request.GET.get('service')
     destination = request.GET.get('destination')
 
-    three_stops, audio_string = get_bus_data(lat, lng, service, destination)
+    three_stops, audio_string, start_point, end_point = get_bus_data(lat, lng, service, destination)
 
     return render(request, "app/tracker-data.html", {'three_stops': three_stops, 'service': service,
-                                                     'destination': destination, 'audio_string': audio_string})
+                                                     'destination': destination, 'audio_string': audio_string,
+                                                     'start_point': start_point, 'end_point': end_point})
 
 
 def next_stop(request):
@@ -116,12 +118,26 @@ def get_bus_data(lat, lng, service, destination):
         journey['service_number'] = service
         three_stops = get_previous_and_next(stop, journey)
         audio_string = convert_to_audio(three_stops[1]["name"] + " at " + three_stops[1]["time"])
+        (start_point, end_point) = get_endpoint_stops(journey)
     else:
         three_stops = ""
         audio_string = convert_to_audio("None. My apologies an error has occurred. Please prepare for self destruction")
+        start_point = None
+        end_point = None
 
-    return three_stops, audio_string
+    return three_stops, audio_string, start_point, end_point
 
+def get_endpoint_stops(journey):
+    """return the start and end stops for a given journey"""
+    start_point = journey['departures'][0]
+    end_point = journey['departures'][-1]
+
+    # Now find the actual stop data and insert it into the two dicts above
+    api_stops = requests.get('https://tfe-opendata.com/api/v1/stops/').json()["stops"]
+    start_point['stop'] = get_stop(start_point['stop_id'], api_stops)
+    end_point['stop'] = get_stop(end_point['stop_id'], api_stops)
+
+    return start_point, end_point
 
 def get_previous_and_next(stop, journey):
     """find the previous and next stop on the journey from the given stop"""
