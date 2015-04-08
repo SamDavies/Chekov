@@ -68,7 +68,6 @@
             resultDiv.append(data);
             if (nextStop != stop) {
                 var audio = document.getElementById("stop-audio");
-                audio.currentTime = 0;
                 audio.play();
             }
             nextStop = stop;
@@ -78,7 +77,6 @@
         refresh();
     }, 7000);
     var a = document.getElementById("stop-audio");
-    a.currentTime = 0;
     a.play();
 }));
 //# sourceMappingURL=tracker.js.map

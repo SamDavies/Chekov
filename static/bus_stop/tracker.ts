@@ -81,7 +81,6 @@
 
             if(nextStop != stop){
                 var audio = document.getElementById("stop-audio");
-                audio.currentTime=0;
                 audio.play();
             }
 
@@ -91,6 +90,5 @@
 
     setInterval(function(){ refresh(); }, 7000);
     var a = document.getElementById("stop-audio");
-    a.currentTime=0;
     a.play();
 }));
