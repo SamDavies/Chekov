@@ -14,7 +14,7 @@ urlpatterns = patterns('',
 
     url(r'^get_feed/$', app_views.get_feed_element, name='get_feed'),
 
-    url(r'^next_stop/$', app_views.next_stop, name='next_stop'),
+    url(r'^tracker/$', app_views.tracker, name='tracker'),
 
     url(r'^admin/', include(admin.site.urls)),
 )

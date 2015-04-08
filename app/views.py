@@ -67,6 +67,24 @@ def get_feed_element(request):
     return render(request, "app/feed-journey.html", {'three_stops': three_stops})
 
 
+def tracker(request):
+    """tracking of a single bus"""
+    lat = request.GET.get('lat')
+    lng = request.GET.get('lng')
+    service = request.GET.get('service')
+    destination = request.GET.get('destination')
+
+    journey, stop = get_journey(str(service), str(destination), lat, lng)
+    if journey is not None:
+        journey['service_number'] = service
+        three_stops = get_previous_and_next(stop, journey)
+    else:
+        three_stops = ""
+
+    return render(request, "app/tracker-template.html", {'three_stops': three_stops, 'service': service,
+                                                         'destination': destination})
+
+
 def next_stop(request):
     """finds the next stop for the user's bus"""
     """example request: http://127.0.0.1:8000/next_stop/?lat=55.864337&lng=-3.066306&num=2&destination=Gyle Centre"""
