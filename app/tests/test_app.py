@@ -77,7 +77,7 @@ class BusStopTest(TestCase):
 
     def get_time_string(self, offset):
         hours, mins = datetime.datetime.now().hour, datetime.datetime.now().minute
-        return "{0}:{1}".format(str(hours), str(mins+offset))
+        return "{0}:{1}".format(str(hours + 1), str(mins+offset))
 
     def test_get_previous_and_next(self):
         journey = dict(departures=[dict(stop_id=95624796), dict(stop_id=36234956), dict(stop_id=36234959),
@@ -138,6 +138,12 @@ class BusStopTest(TestCase):
         """ensure that the tracker page loads"""
         data = dict(lat='55.944373', lng='-3.186893', service='3', destination="Clovenstone Drive")
         r = self.client.get(reverse("tracker"), data=data)
+        self.assertEqual(r.status_code, 200)
+
+    def test_tracker_data(self):
+        """ensure that the tracker page loads"""
+        data = dict(lat='55.944373', lng='-3.186893', service='3', destination="Clovenstone Drive")
+        r = self.client.get(reverse("tracker_data"), data=data)
         self.assertEqual(r.status_code, 200)
 
     #########
