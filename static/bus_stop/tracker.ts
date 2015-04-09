@@ -88,7 +88,7 @@
         });
     }
 
-    setInterval(function(){ refresh(); }, 7000);
+    setInterval(function(){ refresh(); }, 10000);
     var a = document.getElementById("stop-audio");
     a.play();
 }));

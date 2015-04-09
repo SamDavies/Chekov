@@ -167,5 +167,5 @@
         return cookieValue;
     }
 
-    fetchAllJourneys();
+    setInterval(function(){ fetchAllJourneys(); }, 15000);
 }));

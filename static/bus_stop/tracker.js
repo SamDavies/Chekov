@@ -75,7 +75,7 @@
     }
     setInterval(function () {
         refresh();
-    }, 7000);
+    }, 10000);
     var a = document.getElementById("stop-audio");
     a.play();
 }));

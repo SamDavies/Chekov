@@ -144,6 +144,8 @@
         }
         return cookieValue;
     }
-    fetchAllJourneys();
+    setInterval(function () {
+        fetchAllJourneys();
+    }, 15000);
 }));
 //# sourceMappingURL=feed.js.map
