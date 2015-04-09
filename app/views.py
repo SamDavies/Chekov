@@ -127,6 +127,7 @@ def get_bus_data(lat, lng, service, destination):
 
     return three_stops, audio_string, start_point, end_point
 
+
 def get_endpoint_stops(journey):
     """return the start and end stops for a given journey"""
     start_point = journey['departures'][0]
@@ -138,6 +139,7 @@ def get_endpoint_stops(journey):
     end_point['stop'] = get_stop(end_point['stop_id'], api_stops)
 
     return start_point, end_point
+
 
 def get_previous_and_next(stop, journey):
     """find the previous and next stop on the journey from the given stop"""
@@ -210,7 +212,7 @@ def remove_bad_destinations(array, good_destination):
     """remove all destinations from the array which are not the same as the good destination"""
     good_array = []
     for x in array:
-        if x['destination'] == good_destination:
+        if x['destination'] in good_destination or good_destination in x['destination']:
             good_array.append(x)
     return good_array
 
