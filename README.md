@@ -1,6 +1,6 @@
 Bus Stop Bonanza - Team Chekov
 ============
-[link to website](http://example.com).
+[link to website](https://bus-stop-bonanza.herokuapp.com).
 
 Installation
 ------------
