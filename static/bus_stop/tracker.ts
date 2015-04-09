@@ -8,7 +8,7 @@ class TrackerMap {
     marker: any;
     
     constructor(mapId: string) {
-        var map = L.map(mapId);
+        var map = L.map(mapId).setView(new L.LatLng(0, 0), 13);
         
         L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
             attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
@@ -21,7 +21,9 @@ class TrackerMap {
     }
     
     setLocation(x: number, y: number) {
-        this.map.setView([x, y]);
+        console.log("Updating map to: " + x + " " + y);
+        
+        this.map.panTo([x, y]);
         
         this.map.removeLayer(this.marker);
         this.marker = L.marker(new L.LatLng(x, y)).addTo(this.map);
@@ -51,10 +53,11 @@ class TrackerMap {
     /////////////////////////////////
     // The rest of code goes here! //
     /////////////////////////////////
-
+    
     var lat: String = '0';
     var lng: String = '0';
     var nextStop: String = $('#result').find("#bus-data").attr('data-stop');
+    var trackerMap: TrackerMap = new TrackerMap("tracker-map");
 
     function getData(service, destination, result) {
         getLocation();
@@ -107,7 +110,7 @@ class TrackerMap {
         var service = panelDiv.attr('data-service');
         var destination = panelDiv.attr('data-destination');
         var stop = panelDiv.attr('data-stop');
-        getData(service, destination, resultDiv).done(function (data) {
+        getData(service, destination, resultDiv).done(function (data) {            
             resultDiv.empty();
             resultDiv.append(data);
 
@@ -115,6 +118,8 @@ class TrackerMap {
                 var audio = document.getElementById("stop-audio");
                 audio.play();
             }
+            
+            trackerMap.setLocation(data["lat"], data["lng"]);
 
             nextStop = stop;
         });
