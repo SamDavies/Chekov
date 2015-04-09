@@ -1,53 +1,14 @@
 /**
  * Created by Sam Davies on 28/03/15.
  */
-var map;
-var brooklyn = new google.maps.LatLng(40.6743890, -73.9455);
 
-var MY_MAPTYPE_ID = 'custom_style';
+// create a map in the "map" div, set the view to a given place and zoom
+var map = L.map('tracker-map').setView([51.505, -0.09], 13);
 
-function initialize() {
+// add an OpenStreetMap tile layer
 
-  var featureOpts = [
-    {
-      stylers: [
-        { hue: '#890000' },
-        { visibility: 'simplified' },
-        { gamma: 0.5 },
-        { weight: 0.5 }
-      ]
-    },
-    {
-      elementType: 'labels',
-      stylers: [
-        { visibility: 'off' }
-      ]
-    },
-    {
-      featureType: 'water',
-      stylers: [
-        { color: '#890000' }
-      ]
-    }
-  ];
 
-  var mapOptions = {
-    zoom: 4,
-    center: new google.maps.LatLng(-33, 151),
-    disableDefaultUI: true,
-    mapTypeId: MY_MAPTYPE_ID
-  };
-
-  map = new google.maps.Map(document.getElementById('map-canvas'),
-      mapOptions);
-
-  var styledMapOptions = {
-    name: 'Custom Style'
-  };
-
-  var customMapType = new google.maps.StyledMapType(featureOpts, styledMapOptions);
-
-  map.mapTypes.set(MY_MAPTYPE_ID, customMapType);
-}
-
-google.maps.event.addDomListener(window, 'load', initialize);
+// add a marker in the given location, attach some popup content to it and open the popup
+L.marker([51.5, -0.09]).addTo(map)
+    .bindPopup('A pretty CSS3 popup. <br> Easily customizable.')
+    .openPopup();
