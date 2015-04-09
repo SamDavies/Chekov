@@ -1,4 +1,4 @@
-Bus Ston Bonanza - Team Chekov
+Bus Stop Bonanza - Team Chekov
 ============
 [link to website](http://example.com).
 
