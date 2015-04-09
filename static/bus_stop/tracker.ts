@@ -1,3 +1,5 @@
+/// <reference path="leaflet.d.ts" />
+
 /* Tracker Map */
 
 class TrackerMap {
@@ -12,7 +14,7 @@ class TrackerMap {
             attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
         }).addTo(map);
         
-        var marker = L.marker([0, 0]).addTo(map);
+        var marker = L.marker(new L.LatLng(0,0)).addTo(map);
         
         this.map = map;
         this.marker = marker;
@@ -22,12 +24,11 @@ class TrackerMap {
         this.map.setView([x, y]);
         
         this.map.removeLayer(this.marker);
-        this.marker = L.marker([x, y]).addTo(map);
+        this.marker = L.marker(new L.LatLng(x, y)).addTo(this.map);
         this.marker.bindPopup("<b>You are here!</b>");
     }
     
 }
-
 
 // IIFE - Immediately Invoked Function Expression
 (function(yourcode) {
