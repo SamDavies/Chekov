@@ -2,8 +2,8 @@
 
 class TrackerMap {
     
-    map: Object;
-    marker: Object;
+    map: any;
+    marker: any;
     
     constructor(mapId: string) {
         var map = L.map(mapId);
