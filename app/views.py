@@ -1,3 +1,4 @@
+import base64
 from django.shortcuts import render
 import math
 import requests
@@ -9,6 +10,9 @@ import pytz
 # Views #
 #########
 
+sesh = requests.Session()
+sesh.headers.update({'Authorization': 'Token ' + '0c627af5849e23b0b030bc7352550884'})
+
 def speech(request):
     """some sweet sweet audio"""
     audio_string = "O-oh O-oh! Throw your hands in the air. O-oh O-oh! Like you just don't care. " \
@@ -18,7 +22,7 @@ def speech(request):
 
 def stops(request):
     """fetch all the stops into an array created from json"""
-    r = requests.get('https://tfe-opendata.com/api/v1/stops')
+    r = sesh.get('https://tfe-opendata.com/api/v1/stops')
     stops_array = r.json()["stops"]
     print(str(len(stops_array)) + " stops found")
     return render(request, "app/sample/stops.html", {'stops_array': stops_array})
@@ -30,7 +34,7 @@ def proxy_locator(request):
 
 def feed(request):
     """Find the X nearest buses to the location and display the home page"""
-    r = requests.get('https://tfe-opendata.com/api/v1/vehicle_locations')
+    r = sesh.get('https://tfe-opendata.com/api/v1/vehicle_locations')
     live_bus_array = r.json()["vehicles"]
     my_lat = request.GET.get('lat')
     my_lng = request.GET.get('lng')
@@ -74,7 +78,7 @@ def tracker(request):
     service = request.GET.get('service')
     destination = request.GET.get('destination')
 
-    three_stops, audio_string, start_point, end_point  = get_bus_data(lat, lng, service, destination)
+    three_stops, audio_string, start_point, end_point = get_bus_data(lat, lng, service, destination)
 
     return render(request, "app/tracker.html", {'three_stops': three_stops, 'service': service,
                                                 'destination': destination, 'audio_string': audio_string,
@@ -134,7 +138,7 @@ def get_endpoint_stops(journey):
     end_point = journey['departures'][-1]
 
     # Now find the actual stop data and insert it into the two dicts above
-    api_stops = requests.get('https://tfe-opendata.com/api/v1/stops/').json()["stops"]
+    api_stops = sesh.get('https://tfe-opendata.com/api/v1/stops/').json()["stops"]
     start_point['stop'] = get_stop(start_point['stop_id'], api_stops)
     end_point['stop'] = get_stop(end_point['stop_id'], api_stops)
 
@@ -144,7 +148,7 @@ def get_endpoint_stops(journey):
 def get_previous_and_next(stop, journey):
     """find the previous and next stop on the journey from the given stop"""
     departures = journey['departures']
-    api_stops = requests.get('https://tfe-opendata.com/api/v1/stops/').json()["stops"]
+    api_stops = sesh.get('https://tfe-opendata.com/api/v1/stops/').json()["stops"]
     length = len(departures)
     for i in range(length):
         if departures[i]['stop_id'] == stop['stop_id']:
@@ -187,10 +191,10 @@ def convert_to_audio(my_string):
 def get_journey(service, destination, lat, lng):
     """find the most likely journey based on the service, its destination and your position"""
     url = 'https://tfe-opendata.com/api/v1/journeys/'+service
-    journeys = requests.get(url).json()["journeys"]
+    journeys = sesh.get(url).json()["journeys"]
     journeys = remove_bad_destinations(journeys, destination)
 
-    api_stops = requests.get('https://tfe-opendata.com/api/v1/stops/').json()["stops"]
+    api_stops = sesh.get('https://tfe-opendata.com/api/v1/stops/').json()["stops"]
     possible_stops, possible_journeys = next_stops(journeys, api_stops)
     nearest_stop = nearest_to_me(possible_stops, lat, lng, 1)
 
